@@ -1,22 +1,29 @@
-import java_cup.runtime.*;
+import java.util.*;
 
 %%
-%class Lexer
+%class Scanner
 %standalone
 %line
 %column
 
 %{
-    StringBuffer string = new StringBuffer();
-
-    private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
-    }
-
-    private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+    List<ArrayList<String>> operators = new ArrayList<ArrayList<String>>();
+    
+    private void addOp(String pOp, int pLine, int pCol) {
+        ArrayList<String> op = new ArrayList();
+        op.add(pOp);
+        op.add(String.valueOf(pLine));
+        op.add(String.valueOf(pCol));
+        this.operators.add(op);
     }
 %}
+
+%eof{
+    System.out.print("Operators: \n");
+    for (int i = 0; i < operators.size(); i++) {
+        System.out.print("op: "+(operators.get(i)).get(0) + " l:"+(operators.get(i)).get(1) + " c:"+(operators.get(i)).get(2)+"\n");
+    }
+%eof}
 
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
@@ -34,7 +41,48 @@ CommentContent       = ( [^*] | \*+ [^/*] )*
 %%
 {Comment}                      {}
 
-"="                            { return symbol(sym.EQ); }
-"=="                           { return symbol(sym.EQEQ); }
-"+"                            { return symbol(sym.PLUS); }
-
+"=="                           { addOp(yytext(), yyline, yycolumn); }
+"<<="                          { addOp(yytext(), yyline, yycolumn); }
+">>="                          { addOp(yytext(), yyline, yycolumn); }
+"<="                           { addOp(yytext(), yyline, yycolumn); }
+">="                           { addOp(yytext(), yyline, yycolumn); }
+"!="                           { addOp(yytext(), yyline, yycolumn); }
+"+="                           { addOp(yytext(), yyline, yycolumn); }
+"-="                           { addOp(yytext(), yyline, yycolumn); }
+"*="                           { addOp(yytext(), yyline, yycolumn); }
+"/="                           { addOp(yytext(), yyline, yycolumn); }
+"%="                           { addOp(yytext(), yyline, yycolumn); }
+"&="                           { addOp(yytext(), yyline, yycolumn); }
+"^="                           { addOp(yytext(), yyline, yycolumn); }
+"|="                           { addOp(yytext(), yyline, yycolumn); }
+">>"                           { addOp(yytext(), yyline, yycolumn); }
+"<<"                           { addOp(yytext(), yyline, yycolumn); }
+"->"                           { addOp(yytext(), yyline, yycolumn); }
+"||"                           { addOp(yytext(), yyline, yycolumn); }
+"&&"                           { addOp(yytext(), yyline, yycolumn); }
+"++"                           { addOp(yytext(), yyline, yycolumn); }
+"--"                           { addOp(yytext(), yyline, yycolumn); }
+"="                            { addOp(yytext(), yyline, yycolumn); }
+"+"                            { addOp(yytext(), yyline, yycolumn); }
+","                            { addOp(yytext(), yyline, yycolumn); }
+";"                            { addOp(yytext(), yyline, yycolumn); }
+">"                            { addOp(yytext(), yyline, yycolumn); }
+"?"                            { addOp(yytext(), yyline, yycolumn); }
+"<"                            { addOp(yytext(), yyline, yycolumn); }
+"!"                            { addOp(yytext(), yyline, yycolumn); }
+"-"                            { addOp(yytext(), yyline, yycolumn); }
+"*"                            { addOp(yytext(), yyline, yycolumn); }
+"/"                            { addOp(yytext(), yyline, yycolumn); }
+"%"                            { addOp(yytext(), yyline, yycolumn); }
+"("                            { addOp(yytext(), yyline, yycolumn); }
+")"                            { addOp(yytext(), yyline, yycolumn); }
+"["                            { addOp(yytext(), yyline, yycolumn); }
+"]"                            { addOp(yytext(), yyline, yycolumn); }
+"{"                            { addOp(yytext(), yyline, yycolumn); }
+"}"                            { addOp(yytext(), yyline, yycolumn); }
+":"                            { addOp(yytext(), yyline, yycolumn); }
+"."                            { addOp(yytext(), yyline, yycolumn); }
+"&"                            { addOp(yytext(), yyline, yycolumn); }
+"^"                            { addOp(yytext(), yyline, yycolumn); }
+"|"                            { addOp(yytext(), yyline, yycolumn); }
+"~"                            { addOp(yytext(), yyline, yycolumn); }
