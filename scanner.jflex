@@ -65,6 +65,8 @@ Real = {Integer}? "." O* {Integer} {SciNotation}?
 //Real Numbers
 SciNotation = (e|E) {Sign}? {Integer}
 
+//Char
+%state CHAR
 //Strings
 %state STRING
 StringBoundary = \"            
@@ -169,21 +171,39 @@ StringBoundary = \"
     "|"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
     "~"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
 
-    {WhiteSpace} {}
+    {WhiteSpace}                   {}
 
 }
 
-// <YYINITIAL> {StringBoundary}               { yybegin(STRING); stringBuffer.setLength(0); }         
+<CHAR> {
 
-// <STRING> {
-//     \"           { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan donde termina
-    
-//     \\                         { stringBuffer.append('\\'); }
-//     \\\"                       { stringBuffer.append('"'); }
-//     \'                         { stringBuffer.append("'"); }
-//     \?                         { stringBuffer.append('?'); }
+    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \\\\                       { stringBuffer.append('\\'); }
+    \\\"                       { stringBuffer.append('"'); }
+    \\'                        { stringBuffer.append("'"); }
+    \\\?                       { stringBuffer.append('?'); }
+    \\n                        { stringBuffer.append('\n'); }
+    \\r                        { stringBuffer.append('\r'); }
+    \\t                        { stringBuffer.append('\t'); }
+    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+}
 
-//     [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
-// }
+//String
+
+<YYINITIAL> {StringBoundary}       { yybegin(STRING); stringBuffer.setLength(0); }  
+
+//Falta tomar en cuena varios caracteres especiales
+<STRING> {
+
+    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \\\\                       { stringBuffer.append('\\'); }
+    \\\"                       { stringBuffer.append('"'); }
+    \\'                        { stringBuffer.append("'"); }
+    \\\?                       { stringBuffer.append('?'); }
+    \\n                        { stringBuffer.append('\n'); }
+    \\r                        { stringBuffer.append('\r'); }
+    \\t                        { stringBuffer.append('\t'); }
+    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+}
 
 . { System.out.println("Error: "+yytext()+ " in line:" + yyline + " column: " + yycolumn); }
