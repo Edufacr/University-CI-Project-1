@@ -7,6 +7,7 @@ import java.util.*;
 %column
 
 %{
+    StringBuffer stringBuffer = new StringBuffer();
     Output out = new Output();
 %}
 
@@ -25,6 +26,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
+Identifiers = [a-zA-Z_][a-zA-Z0-9_]*
+
 //Numbers
 Sign = ("-"|"+")
 Integer = ([1-9] [0-9]* | 0)
@@ -36,12 +39,13 @@ Real = {Integer}? "." O* {Integer} {SciNotation}?
 //Real Numbers
 SciNotation = (e|E) {Sign}? {Integer}
 
+//Char
+%state CHAR
 //Strings
-StringBegin = \"
+%state STRING
+StringBoundary = \"            
 
 %%
-// Comments
-{Comment}                      {}
 
 //Keywords
 "auto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
@@ -77,8 +81,11 @@ StringBegin = \"
 "volatile"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "while"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 
+<YYINITIAL> {
+    // Comments
+    {Comment}                      {}
 // Identifiers
-[a-zA-Z_][a-zA-Z0-9_]*         { this.out.addToken(yytext(), "Identificadores", yyline); }
+ {Identifiers}         { this.out.addToken(yytext(), "Identificadores", yyline); }
 
 // Literals
 {Integer} {UnsignedLong}       { this.out.addToken(yytext(), "Literales", yyline); }
@@ -136,6 +143,39 @@ StringBegin = \"
 "|"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 "~"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 
-{WhiteSpace} {}
+    {WhiteSpace}                   {}
 
-. { System.out.println("Error: "+yytext()+ " in line:" + yyline+1 + " column: " + yycolumn); }
+}
+
+<CHAR> {
+
+    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \\\\                       { stringBuffer.append('\\'); }
+    \\\"                       { stringBuffer.append('"'); }
+    \\'                        { stringBuffer.append("'"); }
+    \\\?                       { stringBuffer.append('?'); }
+    \\n                        { stringBuffer.append('\n'); }
+    \\r                        { stringBuffer.append('\r'); }
+    \\t                        { stringBuffer.append('\t'); }
+    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+}
+
+//String
+
+<YYINITIAL> {StringBoundary}       { yybegin(STRING); stringBuffer.setLength(0); }  
+
+//Falta tomar en cuena varios caracteres especiales
+<STRING> {
+
+    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \\\\                       { stringBuffer.append('\\'); }
+    \\\"                       { stringBuffer.append('"'); }
+    \\'                        { stringBuffer.append("'"); }
+    \\\?                       { stringBuffer.append('?'); }
+    \\n                        { stringBuffer.append('\n'); }
+    \\r                        { stringBuffer.append('\r'); }
+    \\t                        { stringBuffer.append('\t'); }
+    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+}
+
+. { System.out.println("Error: "+yytext()+ " in line:" + yyline + " column: " + yycolumn); }
