@@ -23,6 +23,8 @@
 hs_err_pid*
 
 #vscode
-Lexer.java
-parser.java
-sym.java
+.vsCode
+
+#Jflex output
+Scanner.java~
+Scanner.java
