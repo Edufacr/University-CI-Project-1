@@ -82,10 +82,10 @@ StringBoundary = \"
 "while"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 
 <YYINITIAL> {
-    // Comments
-    {Comment}                      {}
+// Comments
+{Comment}                      {}
 // Identifiers
- {Identifiers}         { this.out.addToken(yytext(), "Identificadores", yyline); }
+{Identifiers}                 { this.out.addToken(yytext(), "Identificadores", yyline); }
 
 // Literals
 {Integer} {UnsignedLong}       { this.out.addToken(yytext(), "Literales", yyline); }
@@ -143,13 +143,13 @@ StringBoundary = \"
 "|"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 "~"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 
-    {WhiteSpace}                   {}
+{WhiteSpace}                   {}
 
 }
 
 <CHAR> {
 
-    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \"                         { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales",yyline); } //Se guarda la columan y fila donde termina
     \\\\                       { stringBuffer.append('\\'); }
     \\\"                       { stringBuffer.append('"'); }
     \\'                        { stringBuffer.append("'"); }
@@ -162,12 +162,12 @@ StringBoundary = \"
 
 //String
 
-<YYINITIAL> {StringBoundary}       { yybegin(STRING); stringBuffer.setLength(0); }  
+<YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); }  
 
 //Falta tomar en cuena varios caracteres especiales
 <STRING> {
 
-    \"                         { yybegin(YYINITIAL); addOp(this.literals, stringBuffer.toString(), yyline, yycolumn); } //Se guarda la columan y fila donde termina
+    \"                         { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales",yyline); } //Se guarda la columan y fila donde termina
     \\\\                       { stringBuffer.append('\\'); }
     \\\"                       { stringBuffer.append('"'); }
     \\'                        { stringBuffer.append("'"); }
