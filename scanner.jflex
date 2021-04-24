@@ -7,36 +7,11 @@ import java.util.*;
 %column
 
 %{
-    List<ArrayList<String>> literals = new ArrayList<ArrayList<String>>();
-    List<ArrayList<String>> operators = new ArrayList<ArrayList<String>>();
-    List<ArrayList<String>> identifiers = new ArrayList<ArrayList<String>>();
-    List<ArrayList<String>> keywords = new ArrayList<ArrayList<String>>();
-    
-    private void addOp(List<ArrayList<String>> pList, String pOp, int pLine, int pCol) {
-        ArrayList<String> op = new ArrayList();
-        op.add(pOp);
-        op.add(String.valueOf(pLine));
-        op.add(String.valueOf(pCol));
-        pList.add(op);
-    }
-
-    private void printArrays(List<ArrayList<String>> pArray) {
-        for (int i = 0; i < pArray.size(); i++) {
-            System.out.print("[ "+(pArray.get(i)).get(0) + " ] \t ( "+(pArray.get(i)).get(1) + ":"+(pArray.get(i)).get(2)+" ) \n");
-        }
-    }
+    Output out = new Output();
 %}
 
 %eof{
-    System.out.print("Operators: \n");
-    printArrays(this.operators);
-    System.out.print("Keywords: \n");
-    printArrays(this.keywords);
-    System.out.print("Identifiers: \n");
-    printArrays(this.identifiers);
-    System.out.print("Literals: \n");
-    printArrays(this.literals);
-    
+    this.out.printResult();    
 %eof}
 
 LineTerminator = \r|\n|\r\n
@@ -69,98 +44,98 @@ StringBegin = \"
 {Comment}                      {}
 
 //Keywords
-"auto"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"break"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"case"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"char"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"const"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"continue"                     { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"default"                      { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"do"                           { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"double"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"else"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"enum"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"extern"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"float"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"for"                          { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"goto"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"if"                           { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"int"                          { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"long"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"register"                     { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"return"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"short"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"signed"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"sizeof"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"static"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"struct"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"switch"                       { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"typedef"                      { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"union"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"unsigned"                     { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"void"                         { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"volatile"                     { addOp(this.keywords, yytext(), yyline, yycolumn);}
-"while"                        { addOp(this.keywords, yytext(), yyline, yycolumn);}
+"auto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"break"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"case"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"char"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"const"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"continue"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"default"                      { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"do"                           { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"double"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"else"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"enum"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"extern"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"float"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"for"                          { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"goto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"if"                           { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"int"                          { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"long"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"register"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"return"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"short"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"signed"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"sizeof"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"static"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"struct"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"switch"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"typedef"                      { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"union"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"unsigned"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"void"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"volatile"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"while"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 
 // Identifiers
-[a-zA-Z_][a-zA-Z0-9_]*         { addOp(this.identifiers, yytext(), yyline, yycolumn); }
+[a-zA-Z_][a-zA-Z0-9_]*         { this.out.addToken(yytext(), "Identificadores", yyline); }
 
 // Literals
-{Integer} {UnsignedLong}       { addOp(this.literals, yytext(), yyline, yycolumn); }
+{Integer} {UnsignedLong}       { this.out.addToken(yytext(), "Literales", yyline); }
 
-{Octal} {UnsignedLong}         { addOp(this.literals, yytext(), yyline, yycolumn); }
+{Octal} {UnsignedLong}         { this.out.addToken(yytext(), "Literales", yyline); }
 
-{Hexadecimal} {UnsignedLong}   { addOp(this.literals, yytext(), yyline, yycolumn); }
+{Hexadecimal} {UnsignedLong}   { this.out.addToken(yytext(), "Literales", yyline); }
 
-{Real}                         { addOp(this.literals, yytext(), yyline, yycolumn); }
+{Real}                         { this.out.addToken(yytext(), "Literales", yyline); }
 
 // Operators
-"=="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"<<="                          { addOp(this.operators, yytext(), yyline, yycolumn); }
-">>="                          { addOp(this.operators, yytext(), yyline, yycolumn); }
-"<="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-">="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"!="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"+="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"-="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"*="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"/="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"%="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"&="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"^="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"|="                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-">>"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"<<"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"->"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"||"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"&&"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"++"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"--"                           { addOp(this.operators, yytext(), yyline, yycolumn); }
-"="                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"+"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-","                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-";"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-">"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"?"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"<"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"!"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"-"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"*"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"/"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"%"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"("                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-")"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"["                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"]"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"{"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"}"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-":"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"."                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"&"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"^"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"|"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
-"~"                            { addOp(this.operators, yytext(), yyline, yycolumn); }
+"=="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"<<="                          { this.out.addToken(yytext(), "Operadores", yyline); }
+">>="                          { this.out.addToken(yytext(), "Operadores", yyline); }
+"<="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+">="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"!="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"+="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"-="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"*="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"/="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"%="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"&="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"^="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"|="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+">>"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"<<"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"->"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"||"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"&&"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"++"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"--"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+"="                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"+"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+","                            { this.out.addToken(yytext(), "Operadores", yyline); }
+";"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+">"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"?"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"<"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"!"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"-"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"*"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"/"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"%"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"("                            { this.out.addToken(yytext(), "Operadores", yyline); }
+")"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"["                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"]"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"{"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"}"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+":"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"."                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"&"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"^"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"|"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+"~"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 
 {WhiteSpace} {}
 
-. { System.out.println("Error: "+yytext()+ " in line:" + yyline + " column: " + yycolumn); }
+. { System.out.println("Error: "+yytext()+ " in line:" + yyline+1 + " column: " + yycolumn); }

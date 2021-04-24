@@ -26,3 +26,6 @@ hs_err_pid*
 Lexer.java
 parser.java
 sym.java
+
+.idea/
+Scanner.java
