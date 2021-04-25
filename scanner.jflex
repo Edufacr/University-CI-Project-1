@@ -151,7 +151,8 @@ StringBoundary = \"
 {WhiteSpace}                   {}
 
 }
-// ' {system.out.println("AAAAAAAAAAAAAAAAAAa")}
+
+//['] {System.out.println("AAAAAAAAAAAAAAAAAAa");}
 // (') [a-zA-Z0-9] (') =              { this.out.addToken(yytext(), "Char", yyline); }
 // //' [0-9] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
 // ' \\[^] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
@@ -162,7 +163,7 @@ StringBoundary = \"
 //<YYINITIAL> {CharBoundary}   { yybegin(CHAR); charBuffer.setLength(0); } 
 <CHAR> {
     {CharBoundary}             { yybegin(YYINITIAL); this.out.addToken(charBuffer.toString(), "Literales", yyline); }
-    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError(yytext(),yyline,yycolumn); }
+    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError(yytext(),yyline+1,yycolumn+1); }
     \\\\                       { stringBuffer.append('\\'); }
     \\\"                       { stringBuffer.append('"'); }
     \\'                        { stringBuffer.append("'"); }
@@ -175,12 +176,15 @@ StringBoundary = \"
 
 //String
 
-<YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); bufferColumn = yycolumn; }  
+<YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); bufferColumn = yycolumn+1; }  
 
 <STRING> {
     {StringBoundary}           { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales", yyline); } //Se guarda la columan y fila donde termina
-    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError("\"" + stringBuffer.toString(), yyline, bufferColumn); }
-    [^\n\r\"]+                 { stringBuffer.append( yytext() ); }
+    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError("\"" + stringBuffer.toString(), yyline+1, bufferColumn); }
+    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+    \\\"                       { stringBuffer.append( yytext() ); }
+    \\{LineTerminator}         {}
+    \\                         { stringBuffer.append( yytext() ); }
 }
 
-. { this.out.addError(yytext(),yyline,yycolumn); }
+. { this.out.addError(yytext(),yyline+1,yycolumn+1); }
