@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 int main(){
     
     //COMENTARIOS
@@ -11,6 +9,10 @@ int main(){
        bloque
     */
     
+    /** 
+        Comentario especial
+    */
+
     //IDENTIFICADORES
     int var = 0;                //identificador lowercase
     int VAR = 0;                //identificador uppercase
@@ -25,6 +27,13 @@ int main(){
     int x = 012;                //octal
     float y = 1.21;             //float
     float z = -12.15;           //float negativo
+    float zz = 12E10;           //Notacion Cientifica
+    float zz = 12.12E10;        //Notacion Cientifica
+
+    //ERRORES LITERALES
+
+
+
     
     //PALABRAS RESERVADAS
     int entero = 0;             //int
