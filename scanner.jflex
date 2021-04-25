@@ -41,10 +41,6 @@ Real = {Integer}? "." O* {Integer} {SciNotation}?
 //Real Numbers
 SciNotation = (e|E) {Sign}? {Integer}
 
-//Char
-%state CHAR
-CharBoundary = \"
-
 //Strings
 %state STRING
 StringBoundary = \"    
@@ -152,29 +148,14 @@ StringBoundary = \"
 
 }
 
-//['] {System.out.println("AAAAAAAAAAAAAAAAAAa");}
-// (') [a-zA-Z0-9] (') =              { this.out.addToken(yytext(), "Char", yyline); }
-// //' [0-9] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
-// ' \\[^] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
-// ' \\0 ' =                   { this.out.addToken(yytext(), "Literales", yyline); }
-// ' \\[0-7]{1,3} ' =          { this.out.addToken(yytext(), "Literales", yyline); }
-// ' \\ x ([1-9A-Fa-f]) ' =       { this.out.addToken(yytext(), "Literales", yyline); }
+'[a-zA-Z0-9]'                  {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
+'\\x([0-9A-Fa-f])'             {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
+'\\[0-7]{1,3}'                 {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
+'\\[\'\"\?\\]'                 {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
+'\\[abfnrtv]'                  {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
 
-//<YYINITIAL> {CharBoundary}   { yybegin(CHAR); charBuffer.setLength(0); } 
-<CHAR> {
-    {CharBoundary}             { yybegin(YYINITIAL); this.out.addToken(charBuffer.toString(), "Literales", yyline); }
-    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError(yytext(),yyline+1,yycolumn+1); }
-    \\\\                       { stringBuffer.append('\\'); }
-    \\\"                       { stringBuffer.append('"'); }
-    \\'                        { stringBuffer.append("'"); }
-    \\\?                       { stringBuffer.append('?'); }
-    \\n                        { stringBuffer.append('\n'); }
-    \\r                        { stringBuffer.append('\r'); }
-    \\t                        { stringBuffer.append('\t'); }
-    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
-}
-
-//String
+//Error ' sin cerrar
+'[^\n\r]*                      {yybegin(YYINITIAL); this.out.addError(yytext(), yyline+1, yycolumn+1);}
 
 <YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); bufferColumn = yycolumn+1; }  
 
