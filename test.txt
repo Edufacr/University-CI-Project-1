@@ -1,9 +1,44 @@
-12.2303
--3.44
-+10.33
-0.456
-.96
-2.15E2
-.0007E4
--50.44
-5e-10
+int a = "a"    //IDENTIFICADORES
+    int var = 0;                //identificador lowercase
+    int VAR = 0;                //identificador uppercase
+    int _var = 0;               //identificador con underscore
+    int var1 = 0;               //identificador con numero
+    printf("Hello World");      //identificador de función
+    
+    //LITERALES
+    int _firstInt = 5;          //int
+    int negative = -8;          //int negativo
+    int _SecondInt = 5U;          //int
+    long _ThirdInt = 8L;          //int negativo
+    int b=0xFAFA;               //hex
+    int hex2 = 12XFAFA;               //hex
+    int x = 012;                //octal
+    float y = .21;             //float
+    float z = -12.15;           //float negativo
+    float zz = 12E-10;           //Notacion Cientifica
+    float zz = 12.12E10;        //Notacion Cientifica
+
+    char s1[] = "Inicio \
+    final";
+    char s2[] = "\"Inicio \n \"";
+
+
+    char c4 = 'a';
+    char c5 = '9';
+    char c6 = '\a';
+    char c7 = '\'';
+
+
+    //ERRORES LITERALES
+    char s3[] = "Inicio 
+    Final";
+    char s4[] = "Inicio;
+
+    char c1 = 'a;
+    char c2 = 'aa';
+    char c3 = '\h';
+
+    int ceros = 000;
+    int octalError = 09
+    int hexError1 = 0x9H
+    float zz = 12.12G10; 
