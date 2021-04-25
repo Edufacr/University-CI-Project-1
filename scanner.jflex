@@ -146,21 +146,21 @@ StringBoundary = \"
 
 {WhiteSpace}                   {}
 
-}
-
-'[a-zA-Z0-9]'                  {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
-'\\x([0-9A-Fa-f])'             {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
-'\\[0-7]{1,3}'                 {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
-'\\[\'\"\?\\]'                 {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
-'\\[abfnrtv]'                  {this.out.addToken(yytext().substring(1, yytext().length()-1), "Literales", yyline);}
+'[a-zA-Z0-9]'                  {this.out.addToken(yytext(), "Literales", yyline);}
+'\\x([0-9A-Fa-f])'             {this.out.addToken(yytext(), "Literales", yyline);}
+'\\[0-7]{1,3}'                 {this.out.addToken(yytext(), "Literales", yyline);}
+'\\[\'\"\?\\]'                 {this.out.addToken(yytext(), "Literales", yyline);}
+'\\[abfnrtv]'                  {this.out.addToken(yytext(), "Literales", yyline);}
 
 //Error ' sin cerrar
-'[^\n\r]*                      {yybegin(YYINITIAL); this.out.addError(yytext(), yyline+1, yycolumn+1);}
+'[^\n\r']*                      {yybegin(YYINITIAL); this.out.addError(yytext(), yyline+1, yycolumn+1);}
+
+}
 
 <YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); bufferColumn = yycolumn+1; }  
 
 <STRING> {
-    {StringBoundary}           { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales", yyline); } //Se guarda la columan y fila donde termina
+    {StringBoundary}           { yybegin(YYINITIAL); this.out.addToken("\""+stringBuffer.toString()+"\"", "Literales", yyline); } //Se guarda la columan y fila donde termina
     {LineTerminator}           { yybegin(YYINITIAL); this.out.addError("\"" + stringBuffer.toString(), yyline+1, bufferColumn); }
     [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
     \\\"                       { stringBuffer.append( yytext() ); }
