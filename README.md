@@ -4,10 +4,14 @@
 Just JFlex
 ```
 java -jar jflex-full-1.8.2.jar scanner.jflex
+
 javac Scanner.java
+javac Output.java
+
 java Scanner input.c
 ```
 
+**Ignorar**
 Exec all
 ```
 java -jar jflex-full-1.8.2.jar scanner.jflex
