@@ -8,6 +8,8 @@ import java.util.*;
 
 %{
     StringBuffer stringBuffer = new StringBuffer();
+    StringBuffer charBuffer = new StringBuffer();
+    int bufferColumn = 0;
     Output out = new Output();
 %}
 
@@ -32,7 +34,7 @@ Identifiers = [a-zA-Z_][a-zA-Z0-9_]*
 Sign = ("-"|"+")
 Integer = ([1-9] [0-9]* | 0)
 Octal = 0 [1-7] [0-7]*
-Hexadecimal = (0x| 0X) ([1-9]|[A-F]) ([1-9]|[A-F])*
+Hexadecimal = (0x| 0X) ([1-9]|[a-fA-F])+
 UnsignedLong = (LU? | UL?)?
 Real = {Integer}? "." O* {Integer} {SciNotation}?
 
@@ -41,11 +43,15 @@ SciNotation = (e|E) {Sign}? {Integer}
 
 //Char
 %state CHAR
+CharBoundary = \"
+
 //Strings
 %state STRING
-StringBoundary = \"            
+StringBoundary = \"    
 
 %%
+
+<YYINITIAL> {
 
 //Keywords
 "auto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
@@ -81,11 +87,10 @@ StringBoundary = \"
 "volatile"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "while"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 
-<YYINITIAL> {
 // Comments
 {Comment}                      {}
 // Identifiers
-{Identifiers}                 { this.out.addToken(yytext(), "Identificadores", yyline); }
+{Identifiers}                  { this.out.addToken(yytext(), "Identificadores", yyline); }
 
 // Literals
 {Integer} {UnsignedLong}       { this.out.addToken(yytext(), "Literales", yyline); }
@@ -146,10 +151,18 @@ StringBoundary = \"
 {WhiteSpace}                   {}
 
 }
+// ' {system.out.println("AAAAAAAAAAAAAAAAAAa")}
+// (') [a-zA-Z0-9] (') =              { this.out.addToken(yytext(), "Char", yyline); }
+// //' [0-9] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
+// ' \\[^] ' =                 { this.out.addToken(yytext(), "Literales", yyline); }
+// ' \\0 ' =                   { this.out.addToken(yytext(), "Literales", yyline); }
+// ' \\[0-7]{1,3} ' =          { this.out.addToken(yytext(), "Literales", yyline); }
+// ' \\ x ([1-9A-Fa-f]) ' =       { this.out.addToken(yytext(), "Literales", yyline); }
 
+//<YYINITIAL> {CharBoundary}   { yybegin(CHAR); charBuffer.setLength(0); } 
 <CHAR> {
-
-    \"                         { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales",yyline); } //Se guarda la columan y fila donde termina
+    {CharBoundary}             { yybegin(YYINITIAL); this.out.addToken(charBuffer.toString(), "Literales", yyline); }
+    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError(yytext(),yyline,yycolumn); }
     \\\\                       { stringBuffer.append('\\'); }
     \\\"                       { stringBuffer.append('"'); }
     \\'                        { stringBuffer.append("'"); }
@@ -162,20 +175,12 @@ StringBoundary = \"
 
 //String
 
-<YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); }  
+<YYINITIAL> {StringBoundary}   { yybegin(STRING); stringBuffer.setLength(0); bufferColumn = yycolumn; }  
 
-//Falta tomar en cuena varios caracteres especiales
 <STRING> {
-
-    \"                         { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales",yyline); } //Se guarda la columan y fila donde termina
-    \\\\                       { stringBuffer.append('\\'); }
-    \\\"                       { stringBuffer.append('"'); }
-    \\'                        { stringBuffer.append("'"); }
-    \\\?                       { stringBuffer.append('?'); }
-    \\n                        { stringBuffer.append('\n'); }
-    \\r                        { stringBuffer.append('\r'); }
-    \\t                        { stringBuffer.append('\t'); }
-    [^\n\r\"\\]+               { stringBuffer.append( yytext() ); }
+    {StringBoundary}           { yybegin(YYINITIAL); this.out.addToken(stringBuffer.toString(), "Literales", yyline); } //Se guarda la columan y fila donde termina
+    {LineTerminator}           { yybegin(YYINITIAL); this.out.addError("\"" + stringBuffer.toString(), yyline, bufferColumn); }
+    [^\n\r\"]+                 { stringBuffer.append( yytext() ); }
 }
 
-. { System.out.println("Error: "+yytext()+ " in line:" + yyline + " column: " + yycolumn); }
+. { this.out.addError(yytext(),yyline,yycolumn); }

@@ -18,6 +18,10 @@ public class Output {
         }
     }
 
+    public void addError(String pToken, int pLine, int pColumn){
+        System.out.println("Error: "+ pToken + " in line:" + pLine + " column: " + pColumn);
+    }
+
     public void printResult() {
         Set<Map.Entry<String, Token>> entries = this.structure.entrySet();
 
