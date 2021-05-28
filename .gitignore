@@ -31,3 +31,7 @@ Scanner.java
 #Jflex output
 Scanner.java~
 Scanner.java
+
+#CUP output
+Parser.java~
+Parser.java
