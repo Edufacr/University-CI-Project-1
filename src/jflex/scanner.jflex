@@ -2,7 +2,7 @@ import java.util.*;
 
 %%
 %class Scanner
-%standalone
+%cup
 %line
 %column
 

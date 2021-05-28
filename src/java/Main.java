@@ -4,7 +4,10 @@ import java.io.FileReader;
 class Main {
     public static void main(String[] args) throws FileNotFoundException {
         String fileName = "input.c";
-        parser p = new parser(new scanner(new FileReader(fileName)));
+        FileReader file = new FileReader(fileName);
+        Scanner scanner = new Scanner(file);
+        Parser p = new Parser(scanner);
+        
         try {
             //p.parse();
             System.out.println(p.debug_parse().value);
