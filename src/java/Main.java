@@ -3,7 +3,7 @@ import java.io.FileReader;
 
 class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        String fileName = "test/input.c";
+        String fileName = "test/cup.c";
         FileReader file = new FileReader(fileName);
         Scanner scanner = new Scanner(file);
         Parser p = new Parser(scanner);

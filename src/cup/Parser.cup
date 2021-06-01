@@ -1,6 +1,17 @@
 /* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 
+parser code
+{:
+    public void syntax_error(Symbol s){
+        System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+    }
+:}
+
 /* Terminals (tokens returned by the scanner). */
 terminal SEMICOLON, ID, COMMA, ASSIGN, RBRACK, LBRACK, CONST, INT, CHAR, STATIC, LONG, SHORT;        // our scanner provides numbers as integers
 terminal Integer NUMCONST;
@@ -27,7 +38,7 @@ varDeclList ::= varDeclList COMMA varDeclInit
             | varDeclInit;
 
 varDeclInit ::= varDeclId 
-            | varDeclId ASSIGN simpleExp;
+            | varDeclId ASSIGN NUMCONST;
 
 varDeclId ::= ID 
             | ID LBRACK NUMCONST RBRACK;
