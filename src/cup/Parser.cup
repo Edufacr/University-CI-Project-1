@@ -1,13 +1,38 @@
+/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 
-terminal PLUS, TIMES, LPAREN, RPAREN;
-terminal Integer NUMBER;
+/* Terminals (tokens returned by the scanner). */
+terminal SEMICOLON, ID, COMMA, ASSIGN, RBRACK, LBRACK, CONST, INT, CHAR, STATIC, LONG, SHORT;        // our scanner provides numbers as integers
+terminal Integer NUMCONST;
 
-non terminal Integer expr, term, factor;
+/* Non terminals */
+non terminal program, decs, vars, varDecl, constKey, scopedVarDecl, varDeclInit, varDeclId, typeSpec, functions, varDeclList, simpleExp;
 
-precedence left PLUS;
-precedence left TIMES;
+//non terminal Integer    expr;      // used to store evaluated subexpressions
 
-expr ::= expr:e PLUS term:t {: RESULT = new Integer(e.intValue() + t.intValue()); :} | term:t {: RESULT = t; :} ;
-term ::= term:t TIMES factor:f {: RESULT = new Integer(t.intValue() * f.intValue()); :} | factor:f {: RESULT = f; :} ;
-factor ::= LPAREN expr:e RPAREN {: RESULT = e; :} | NUMBER:n {: RESULT = n; :};
+/* The grammar rules */
+
+program ::= decs;
+decs ::= functions
+        | vars functions;
+
+vars ::= vars varDecl | ; //epsilon
+varDecl ::= constKey typeSpec varDeclList SEMICOLON;
+constKey ::= CONST | /*nada*/ ; //epsilon
+
+scopedVarDecl ::= STATIC typeSpec varDeclList SEMICOLON 
+                | typeSpec varDeclList SEMICOLON; //mas adelante
+
+varDeclList ::= varDeclList COMMA varDeclInit 
+            | varDeclInit;
+
+varDeclInit ::= varDeclId 
+            | varDeclId ASSIGN simpleExp;
+
+varDeclId ::= ID 
+            | ID LBRACK NUMCONST RBRACK;
+
+typeSpec ::=  INT 
+            | CHAR 
+            | LONG 
+            | SHORT;
