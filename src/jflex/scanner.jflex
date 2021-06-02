@@ -16,6 +16,7 @@ import java_cup.runtime.*;
 
 %eof{
     this.out.printResult();    
+    //return new Symbol(sym.EOF, yyline, yycolumn, "Lexic Error");
 %eof}
 
 LineTerminator = \r|\n|\r\n
@@ -172,4 +173,5 @@ StringBoundary = \"
     \\                         { stringBuffer.append( yytext() ); }
 }
 
-. { throw new Error("Illegal character <"+ yytext() +">"); }
+//. { throw new Error("Illegal character <"+ yytext() +">"); }
+. { this.out.addError(yytext(),yyline + 1, yycolumn + 1); }
