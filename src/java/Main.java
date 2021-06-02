@@ -11,6 +11,7 @@ class Main {
         try {
             p.parse();
             System.out.println(p.debug_parse().value);
+            System.out.println("Funciona");
         }
         catch (Exception e) {
             System.out.println("Caught an exception.");

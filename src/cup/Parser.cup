@@ -4,6 +4,7 @@ import java_cup.runtime.*;
 parser code
 {:
     public void syntax_error(Symbol s){
+        System.out.println("Error de Verdad")
         System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 
@@ -25,7 +26,7 @@ non terminal program, decs, vars, varDecl, constKey, scopedVarDecl, varDeclInit,
 
 program ::= decs;
 decs ::= functions
-        | vars functions;
+        | vars functions |vars;
 
 vars ::= vars varDecl | ; //epsilon
 varDecl ::= constKey typeSpec varDeclList SEMICOLON;
