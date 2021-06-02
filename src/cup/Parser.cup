@@ -37,7 +37,8 @@ decs    ::=     vars functions
 vars    ::=     vars varDecl 
                 | ; //epsilon
 
-varDecl ::= constKey typeSpec varDeclList SEMICOLON;
+varDecl ::= constKey typeSpec varDeclList SEMICOLON
+            | error SEMICOLON; // Tirar un error hasta ; pero se recupera 
 
 constKey ::=    CONST 
                 | ; //epsilon
