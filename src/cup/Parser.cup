@@ -4,23 +4,38 @@ import java_cup.runtime.*;
 parser code
 {:
     public void syntax_error(Symbol s){
-        System.out.println("Error de Verdad");
         System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        System.out.println("Unrecovered Syntax Error");
         System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 :}
 
 /* Terminals (tokens returned by the scanner). */
+
+// Identifiers
 terminal IDENTIFIER; 
+// Special Symbols
 terminal SEMICOLON, ASSIGN, COMMA, RBRACK, LBRACK;
+// Mandatory Reserved Words
 terminal BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
-terminal STATIC;
+// Mandatory Types
 terminal CONST, CHAR, INT, LONG, SHORT;
+// Mandatory Foo
 terminal READ, WRITE;
+// Numeric Operators
+
+//Boolean Operators
+
+//Literals
 terminal Integer NUMCONST;
+
+// Extra Reserved Words
+terminal STATIC;
+
+
 
 /* Non terminals */
 non terminal program, decs, vars, varDecl, constKey, scopedVarDecl, varDeclInit, varDeclId, typeSpec, functions, varDeclList, simpleExp;
