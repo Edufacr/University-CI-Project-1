@@ -50,44 +50,48 @@ StringBoundary = \"
 
 <YYINITIAL> {
 
+//Functions
+"read"                         { return new Symbol(sym.READ, yyline, yycolumn, "read"); }
+"write"                        { return new Symbol(sym.WRITE, yyline, yycolumn, "write"); }
+
 //Keywords
 "auto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"break"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"case"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"break"                        { return new Symbol(sym.BREAK, yyline, yycolumn, "break"); }
+"case"                         { return new Symbol(sym.CASE, yyline, yycolumn, "case"); }
 "char"                         { return new Symbol(sym.CHAR, yyline, yycolumn, "char"); }
-"const"                        { return new Symbol(sym.CONST, yyline, yycolumn, "consty"); }
-"continue"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"default"                      { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"do"                           { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"const"                        { return new Symbol(sym.CONST, yyline, yycolumn, "const"); }
+"continue"                     { return new Symbol(sym.CONTINUE, yyline, yycolumn, "continue"); }
+"default"                      { return new Symbol(sym.DEFAULT, yyline, yycolumn, "default"); }
+"do"                           { return new Symbol(sym.DO, yyline, yycolumn, "do"); }
 "double"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"else"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"else"                         { return new Symbol(sym.ELSE, yyline, yycolumn, "else"); }
 "enum"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "extern"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "float"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"for"                          { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"for"                          { return new Symbol(sym.FOR, yyline, yycolumn, "for"); }
 "goto"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"if"                           { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"int"                          { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"if"                           { return new Symbol(sym.IF, yyline, yycolumn, "if"); }
+"int"                          { return new Symbol(sym.INT, yyline, yycolumn, "int"); }
 "long"                         { return new Symbol(sym.LONG, yyline, yycolumn, "long"); }
 "register"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"return"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"return"                       { return new Symbol(sym.RETURN, yyline, yycolumn, "return"); } }
 "short"                        { return new Symbol(sym.SHORT, yyline, yycolumn, "short"); } }
 "signed"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "sizeof"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "static"                       { return new Symbol(sym.STATIC, yyline, yycolumn, "static"); }
 "struct"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"switch"                       { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"switch"                       { return new Symbol(sym.SWITCH, yyline, yycolumn, "switch"); }
 "typedef"                      { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "union"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
 "unsigned"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"void"                         { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"void"                         { return new Symbol(sym.VOID, yyline, yycolumn, "void"); }
 "volatile"                     { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
-"while"                        { this.out.addToken(yytext(), "Palabras Reservadas", yyline); }
+"while"                        { return new Symbol(sym.WHILE, yyline, yycolumn, "while"); }
 
 // Comments
 {Comment}                      {}
 // Identifiers
-{Identifiers}                  { return new Symbol(sym.ID, yyline, yycolumn, "id"); }
+{Identifiers}                  { return new Symbol(sym.IDENTIFIER, yyline, yycolumn, yytext()); }
 
 // Literals
 {Integer} {UnsignedLong}       { return new Symbol(sym.NUMCONST, yyline, yycolumn, "numconst"); }
@@ -123,7 +127,7 @@ StringBoundary = \"
 "="                            { return new Symbol(sym.ASSIGN, yyline, yycolumn, "assign"); }
 "+"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 ","                            { return new Symbol(sym.COMMA, yyline, yycolumn, "comma"); }
-";"                            { return new Symbol(sym.SEMICOLON, yyline, yycolumn, "hola"); }
+";"                            { return new Symbol(sym.SEMICOLON, yyline, yycolumn, ";"); }
 ">"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 "?"                            { this.out.addToken(yytext(), "Operadores", yyline); }
 "<"                            { this.out.addToken(yytext(), "Operadores", yyline); }
