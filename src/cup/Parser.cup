@@ -15,7 +15,7 @@ parser code
 
 /* Terminals (tokens returned by the scanner). */
 terminal IDENTIFIER; 
-terminal SEMICOLON, COMMA, , RBRACK, LBRACK;
+terminal SEMICOLON, ASSIGN, COMMA, RBRACK, LBRACK;
 terminal BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
 terminal STATIC;
 terminal CONST, CHAR, INT, LONG, SHORT;
