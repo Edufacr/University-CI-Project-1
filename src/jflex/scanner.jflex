@@ -137,12 +137,12 @@ StringBoundary = \"
     "*"                            { this.out.addToken(yytext(), "Operadores", yyline); }
     "/"                            { this.out.addToken(yytext(), "Operadores", yyline); }
     "%"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "("                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    ")"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+    "("                            { return new Symbol(sym.LPAREN, yyline, yycolumn, "("); }
+    ")"                            { return new Symbol(sym.RPAREN, yyline, yycolumn, ")"); }
     "["                            { return new Symbol(sym.RBRACK, yyline, yycolumn, "["); }
     "]"                            { return new Symbol(sym.LBRACK, yyline, yycolumn, "]"); }
-    "{"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "}"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+    "{"                            { return new Symbol(sym.LCURLY, yyline, yycolumn, "{"); }
+    "}"                            { return new Symbol(sym.RCURLY, yyline, yycolumn, "}"); }
     ":"                            { this.out.addToken(yytext(), "Operadores", yyline); }
     "."                            { this.out.addToken(yytext(), "Operadores", yyline); }
     "&"                            { this.out.addToken(yytext(), "Operadores", yyline); }

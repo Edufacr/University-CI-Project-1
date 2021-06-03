@@ -9,17 +9,18 @@ class Main {
         Parser p = new Parser(scanner);
         
         try {
-            if(p.parse().parse_state != 1){
-                System.out.println("-----------------------------");
-                System.out.println("Initializing Debug Session: ");
-                System.out.println("-----------------------------");
-                p.debug_parse();
-            }
-            else{
+            p.parse();
+            // if(p.parse().parse_state != 1){
+            //     System.out.println("-----------------------------");
+            //     System.out.println("Initializing Debug Session: ");
+            //     System.out.println("-----------------------------");
+            //     p.debug_parse();
+            // }
+            // else{
                 System.out.println("-----------------------------");
                 System.out.println("Success!");
                 System.out.println("-----------------------------");
-            }
+            // }
         }
         catch (Exception e) {
             System.out.println("Caught an exception.");

@@ -7,34 +7,38 @@
 public interface sym {
   /* terminals */
   public static final int RBRACK = 6;
-  public static final int READ = 25;
-  public static final int LONG = 23;
-  public static final int CONTINUE = 11;
+  public static final int READ = 29;
+  public static final int LONG = 27;
+  public static final int CONTINUE = 15;
+  public static final int ELSE = 18;
   public static final int SEMICOLON = 3;
-  public static final int ELSE = 14;
-  public static final int INT = 22;
-  public static final int CHAR = 21;
-  public static final int WHILE = 20;
+  public static final int INT = 26;
+  public static final int RPAREN = 9;
+  public static final int CHAR = 25;
+  public static final int WHILE = 24;
   public static final int LBRACK = 7;
-  public static final int RETURN = 17;
+  public static final int RCURLY = 11;
+  public static final int RETURN = 21;
   public static final int IDENTIFIER = 2;
-  public static final int SWITCH = 18;
-  public static final int IF = 16;
-  public static final int WRITE = 26;
-  public static final int STATIC = 28;
-  public static final int DO = 13;
-  public static final int NUMCONST = 27;
+  public static final int SWITCH = 22;
+  public static final int IF = 20;
+  public static final int LPAREN = 8;
+  public static final int WRITE = 30;
+  public static final int STATIC = 32;
+  public static final int DO = 17;
+  public static final int NUMCONST = 31;
+  public static final int LCURLY = 10;
   public static final int COMMA = 5;
   public static final int EOF = 0;
-  public static final int BREAK = 9;
-  public static final int CONST = 8;
-  public static final int CASE = 10;
+  public static final int BREAK = 13;
+  public static final int CONST = 12;
+  public static final int CASE = 14;
   public static final int error = 1;
-  public static final int SHORT = 24;
+  public static final int SHORT = 28;
   public static final int ASSIGN = 4;
-  public static final int DEFAULT = 12;
-  public static final int FOR = 15;
-  public static final int VOID = 19;
+  public static final int DEFAULT = 16;
+  public static final int FOR = 19;
+  public static final int VOID = 23;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -44,6 +48,10 @@ public interface sym {
   "COMMA",
   "RBRACK",
   "LBRACK",
+  "LPAREN",
+  "RPAREN",
+  "LCURLY",
+  "RCURLY",
   "CONST",
   "BREAK",
   "CASE",
