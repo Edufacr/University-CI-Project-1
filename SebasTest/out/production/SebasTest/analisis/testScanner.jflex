@@ -1,3 +1,5 @@
+package analisis;
+
 import java_cup.runtime.Symbol;
 
 %%
@@ -8,6 +10,7 @@ import java_cup.runtime.Symbol;
 %}
 
 %class scanner
+%cup
 %public
 %standalone
 %line

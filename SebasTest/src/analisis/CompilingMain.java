@@ -22,7 +22,7 @@ public class CompilingMain {
      */
     public static void main(String[] args) {
         try {
-            String texto=" Public void  Metodo1(int j, char c){\n print(\"hola mundo\"); \n Int x=5;\n } ";
+            String texto="hola";
             System.out.println("Inicia el analisis...\n");
             scanner scan = new scanner(new BufferedReader( new StringReader(texto)));
             parser parser = new parser(scan);

@@ -8,7 +8,7 @@ parser code
         System.out.println("Error de Sintaxis: "+ s.value + "Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 
-    public void unrecovered_syntax_error(Symbol s) throws java.lang.Excepction { 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
         System.out.println("Error de Sintaxis: "+ s.value + "Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 :}
@@ -23,7 +23,6 @@ nonterminal INICIO;
 
 start with INICIO;
 
-INICIO ::= Identifiers {:
-    System.out.println(tmp);
-    tmp = "";
+INICIO ::= Identifiers:p {:
+    System.out.println(p);
 :};

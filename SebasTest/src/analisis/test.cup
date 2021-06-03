@@ -23,7 +23,6 @@ nonterminal INICIO;
 
 start with INICIO;
 
-INICIO ::= Identifiers {:
-    System.out.println(tmp);
-    tmp = "";
+INICIO ::= Identifiers:p {:
+    System.out.println(p);
 :};

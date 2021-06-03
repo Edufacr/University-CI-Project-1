@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="CheckStyle-IDEA-Module">
+    <option name="configuration">
+      <map />
+    </option>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/java-cup-11b.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/binary" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/cup" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/interpreter" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/java" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/simple" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/simple-maven/src/main/java" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/simple-maven/src/test/java" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/examples/standalone-maven/src/test/java" />
+          <root url="file://$USER_HOME$/Downloads/drive-download-20210528T182758Z-001/jflex-1.4.3/jflex-1.4.3/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
