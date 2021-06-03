@@ -70,15 +70,13 @@ Grammar Rules
 // Program Structure
 program  ::=       decls;
 
-decls    ::=      vars 
+decls    ::=      vars functions
                   | functions;
-              //  | vars; // TODO: hay que quitarlo
 
 vars    ::=       vars varDecl
                 | vars constDecl
                 | varDecl
                 | constDecl;
-             //   | ; //epsilon
 
 // Const & Vars Declaration
 constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON;
@@ -88,7 +86,6 @@ varDecl   ::=     typeSpec varDeclList SEMICOLON
 
 varDeclList ::=   varDeclList COMMA IDENTIFIER 
                | IDENTIFIER;
-
 
 // Functions
 functions ::=       functions funcDecl
