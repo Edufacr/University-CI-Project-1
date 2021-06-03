@@ -91,14 +91,61 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER
 functions ::=       functions funcDecl
                  |  funcDecl;
 
-funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN LCURLY RCURLY
-                | VOID IDENTIFIER LPAREN params RPAREN LCURLY RCURLY;
+funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
+                | VOID IDENTIFIER LPAREN params RPAREN funcBody;
 
 paramList ::=      typeSpec IDENTIFIER COMMA paramList
                 |  typeSpec IDENTIFIER;
 
 params ::=        paramList 
                 | ; //epsilon
+
+/*
+ En el cuerpo de una función puede venir expresiones, o estructuras de control, instrucciones como read, 
+write, break, continue
+• Las estructuras de control son: if, if-else, for, while, switch.
+• Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
+
+• En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
+puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
+expresión es numérica
+
+
+Preguntas
+Se pueden declarar solo variables dentro de una foo?
+Las asignaciones se consideran numericas para el switch?
+
+*/
+
+stmtList ::=    stmtLists stmt
+                | ; //epsilon
+
+stmt ::=        exprStmt
+                | ifStmt 
+                | whileStmt 
+                | forStmt 
+                | switchStmt 
+                | returnStmt 
+                | continueStmt 
+                | breakStmt;
+
+funcBody ::=   LCURLY vars stmtList RCURLY 
+                    | LCURLY vars RCURLY 
+                    | LCURLY stmtList RCURLY;
+
+sprtStmt ::=    expr SEMICOLON
+                | SEMICOLON;
+
+ifStmt ::=      IF LPAREN expr RPAREN stmt
+                | IF LPAREN expr RPAREN stmt ELSE stmt;
+
+expr ::=        IDENTIFIER ASSIGN expr
+                | numExpr; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
+
+numExpr ::=     IDENTIFIER PLUS_PLUS 
+                ;
+
+
 
 // Literals
 literals ::=      NUMCONST;
