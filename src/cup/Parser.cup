@@ -13,16 +13,20 @@ parser code
     }
 :}
 
-/* Terminals (tokens returned by the scanner). */
+/* 
+--------------
+Terminals
+--------------
+*/
 
 // Identifiers
 terminal IDENTIFIER; 
 // Special Symbols
 terminal SEMICOLON, ASSIGN, COMMA, RBRACK, LBRACK;
 // Mandatory Reserved Words
-terminal BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
+terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
 // Mandatory Types
-terminal CONST, CHAR, INT, LONG, SHORT;
+terminal CHAR, INT, LONG, SHORT;
 // Mandatory Foo
 terminal READ, WRITE;
 // Numeric Operators
@@ -35,42 +39,52 @@ terminal Integer NUMCONST;
 // Extra Reserved Words
 terminal STATIC;
 
+/* 
+--------------
+ Non terminals
+--------------
+*/
 
+// Program Structure
+non terminal program, decls, vars, functions;
 
-/* Non terminals */
-non terminal program, decs, vars, varDecl, constKey, scopedVarDecl, varDeclInit, varDeclId, typeSpec, functions, varDeclList, simpleExp;
+// Const & Vars Declaration
+non terminal constDecl, varDecl, varDeclList;
 
-//non terminal Integer    expr;      // used to store evaluated subexpressions
+// Literals
+non terminal literals;
+// Types
+non terminal typeSpec;
 
-/* The grammar rules */
+/* 
+--------------
+Grammar Rules
+--------------
+*/
 
-program ::=     decs;
+// Program Structure
+program ::=       decls;
 
-decs    ::=     vars functions
-                | vars; // ! Temporal para que no de error
+decs    ::=       vars functions;
 
-vars    ::=     vars varDecl 
+vars    ::=       vars varDecl 
+                | vars constDecl
                 | ; //epsilon
 
-varDecl ::= constKey typeSpec varDeclList SEMICOLON
-            | error SEMICOLON; // Tirar un error hasta ; pero se recupera 
+// Const & Vars Declaration
+constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON;
 
-constKey ::=    CONST 
-                | ; //epsilon
+varDecl ::=       typeSpec varDeclList SEMICOLON
+                | error SEMICOLON; // Tirar un error hasta ; pero se recupera 
 
-scopedVarDecl ::=   STATIC typeSpec varDeclList SEMICOLON 
-                    | typeSpec varDeclList SEMICOLON; //mas adelante
+varDeclList ::=   varDeclList COMMA IDENTIFIER 
+                | IDENTIFIER;
 
-varDeclList ::= varDeclList COMMA varDeclInit 
-                | varDeclInit;
+// Literals
+literals ::= NUMCONST;
 
-varDeclInit ::= varDeclId 
-                | varDeclId ASSIGN NUMCONST;
-
-varDeclId ::=   IDENTIFIER
-                | IDENTIFIER LBRACK NUMCONST RBRACK;
-
+// Types
 typeSpec ::=  INT 
             | CHAR 
             | LONG 
-            | SHORT;
+            | SHORT;     

@@ -7,34 +7,34 @@
 public interface sym {
   /* terminals */
   public static final int RBRACK = 6;
-  public static final int READ = 26;
-  public static final int LONG = 24;
-  public static final int CONTINUE = 10;
+  public static final int READ = 25;
+  public static final int LONG = 23;
+  public static final int CONTINUE = 11;
   public static final int SEMICOLON = 3;
-  public static final int ELSE = 13;
-  public static final int INT = 23;
-  public static final int CHAR = 22;
-  public static final int WHILE = 19;
+  public static final int ELSE = 14;
+  public static final int INT = 22;
+  public static final int CHAR = 21;
+  public static final int WHILE = 20;
   public static final int LBRACK = 7;
-  public static final int RETURN = 16;
+  public static final int RETURN = 17;
   public static final int IDENTIFIER = 2;
-  public static final int SWITCH = 17;
-  public static final int IF = 15;
-  public static final int WRITE = 27;
-  public static final int STATIC = 20;
-  public static final int DO = 12;
-  public static final int NUMCONST = 28;
+  public static final int SWITCH = 18;
+  public static final int IF = 16;
+  public static final int WRITE = 26;
+  public static final int STATIC = 28;
+  public static final int DO = 13;
+  public static final int NUMCONST = 27;
   public static final int COMMA = 5;
   public static final int EOF = 0;
-  public static final int BREAK = 8;
-  public static final int CONST = 21;
-  public static final int CASE = 9;
+  public static final int BREAK = 9;
+  public static final int CONST = 8;
+  public static final int CASE = 10;
   public static final int error = 1;
-  public static final int SHORT = 25;
+  public static final int SHORT = 24;
   public static final int ASSIGN = 4;
-  public static final int DEFAULT = 11;
-  public static final int FOR = 14;
-  public static final int VOID = 18;
+  public static final int DEFAULT = 12;
+  public static final int FOR = 15;
+  public static final int VOID = 19;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -44,6 +44,7 @@ public interface sym {
   "COMMA",
   "RBRACK",
   "LBRACK",
+  "CONST",
   "BREAK",
   "CASE",
   "CONTINUE",
@@ -56,15 +57,14 @@ public interface sym {
   "SWITCH",
   "VOID",
   "WHILE",
-  "STATIC",
-  "CONST",
   "CHAR",
   "INT",
   "LONG",
   "SHORT",
   "READ",
   "WRITE",
-  "NUMCONST"
+  "NUMCONST",
+  "STATIC"
   };
 }
 
