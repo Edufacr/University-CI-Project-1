@@ -51,7 +51,7 @@ Non terminals
 */
 
 // Program Structure
-non terminal program, decls, vars, functions, functions_;
+non terminal program, decls, vars, functions;
 
 // Const & Vars Declaration
 non terminal constDecl, varDecl, varDeclList;
@@ -69,10 +69,19 @@ non terminal funcDecl, paramList, params;
 non terminal codeBlock;
 
 // Statements
-non terminal stmtList, stmt, exprStmt;
+non terminal stmtList, stmt, exprStmt,functionsStmt;
 
 // Expressions
-non terminal expr, numExpr, sumExp, sumOp, mulExp, mulop, unaryExp, factor, immutable, call, args, argList, unaryop;
+non terminal expr;
+
+// SumExpression
+non terminal sumExpr, mulExpr, unaryExpr, factor, immutable;
+
+// Operators
+non terminal sumOp, mulOp, unaryOp;
+
+// Calls
+non terminal call, args, argList;
 
 // Flow Control 
 non terminal ifStmt, iterStmt, switchStmt;
@@ -143,6 +152,8 @@ params ::=        paramList
     Se pueden hacer bloques sin nada?
     Se pueden poner identifiers como exp?
     Donde se pone el DO?
+    No importa que se pongan declaraciones dentro de los if 
+    i++ se tiene que definir o solo ++i
 
 */
 
@@ -161,7 +172,8 @@ stmt ::=        exprStmt
                 | iterStmt
                 | returnStmt 
                 | continueStmt 
-                | breakStmt 
+                | breakStmt
+                | functionsStmt 
                 ;
                 // | switchStmt 
 
@@ -181,7 +193,10 @@ returnStmt ::=  RETURN expr SEMICOLON;
 breakStmt ::=   BREAK SEMICOLON;
 
 continueStmt ::= CONTINUE SEMICOLON;
-
+ 
+functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN
+                    | READ LPAREN RPAREN
+                    | WRITE LPAREN argList RPAREN;
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 expr ::=            IDENTIFIER ASSIGN expr
@@ -198,35 +213,46 @@ expr ::=            IDENTIFIER ASSIGN expr
                 |   IDENTIFIER DISTINCT expr
                 |   IDENTIFIER OR expr
                 |   IDENTIFIER AND expr
-                |   sumExp
+                |   sumExpr
                 ; 
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
-sumExp ::= sumExp sumOp mulExp | mulExp;
+sumExpr ::= sumExpr sumOp mulExpr | mulExpr;
 
-sumOp ::= PLUS | MINUS;
+sumOp ::=   PLUS 
+            | MINUS;
 
-mulExp ::= mulExp mulop unaryExp | unaryExp;
+mulExpr ::=  mulExpr mulOp unaryExpr 
+            | unaryExpr;
 
-mulop ::=  MULT | DIV | MOD;
+mulOp ::=   MULT 
+            | DIV 
+            | MOD;
 
-unaryExp ::= unaryop unaryExp | factor;
+unaryExpr ::= unaryOp unaryExpr
+            | factor;
 
-unaryop ::= MINUS | MULT;
+unaryOp ::=   MINUS
+            | PLUS
+            | PLUS_PLUS
+            | MINUS_MINUS
+            ;
 
 factor ::= immutable | IDENTIFIER;
 
-immutable ::= LPAREN expr RPAREN 
-            | call
-            | literals;
+immutable ::=   LPAREN expr RPAREN 
+                | literals
+                | call
+                ;
             //| constant //como NUMCONST | CHARCONST | STRINGCONST | true | false pero no se si aplican
 
-call ::= IDENTIFIER LPAREN args RPAREN;
+call ::=    IDENTIFIER LPAREN args RPAREN;
 
-args ::= argList 
-        | ;
+args ::=    argList 
+            | ;
 
-argList ::= argList COMMA expr | expr;
+argList ::=     argList COMMA expr 
+                | expr;
 
 
 // Literals
