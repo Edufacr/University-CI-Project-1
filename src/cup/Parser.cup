@@ -75,7 +75,7 @@ non terminal stmtList, stmt, exprStmt;
 non terminal expr, numExpr, sumExp, sumOp, mulExp, mulop, unaryExp, factor, immutable, call, args, argList, unaryop;
 
 // Flow Control 
-non terminal ifStmt, whileStmt, forStmt, switchStmt;
+non terminal ifStmt, iterStmt, switchStmt;
 
 // Commmands
 non terminal returnStmt, continueStmt, breakStmt;
@@ -142,6 +142,7 @@ params ::=        paramList
     Las asignaciones se consideran numericas para el switch?
     Se pueden hacer bloques sin nada?
     Se pueden poner identifiers como exp?
+    Donde se pone el DO?
 
 */
 
@@ -157,13 +158,12 @@ stmtList ::=    stmtList stmt
 
 stmt ::=        exprStmt
                 | ifStmt
+                | iterStmt
+                | returnStmt 
+                | continueStmt 
+                | breakStmt 
                 ;
-                // | whileStmt 
-                // | forStmt 
                 // | switchStmt 
-                // | returnStmt 
-                // | continueStmt 
-                // | breakStmt; 
 
 exprStmt ::=    expr SEMICOLON;
                 //| SEMICOLON;
@@ -171,6 +171,16 @@ exprStmt ::=    expr SEMICOLON;
 // Flow Control 
 ifStmt ::=      IF LPAREN expr RPAREN codeBlock
                 | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
+
+iterStmt ::=    WHILE LPAREN expr RPAREN codeBlock
+                | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                ;
+
+returnStmt ::=  RETURN expr SEMICOLON;
+
+breakStmt ::=   BREAK SEMICOLON;
+
+continueStmt ::= CONTINUE SEMICOLON;
 
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
@@ -191,16 +201,6 @@ expr ::=            IDENTIFIER ASSIGN expr
                 |   sumExp
                 ; 
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
-
-//Intento empirico con ambiguedad
-
-// numExpr ::=         numExpr + numExpr 
-//                 |   numExpr - numExpr 
-//                 |   numExpr * numExpr 
-//                 |   numExpr / numExpr 
-//                 | ( numExpr ) 
-//                 | literals 
-//                 ;
 
 sumExp ::= sumExp sumOp mulExp | mulExp;
 
