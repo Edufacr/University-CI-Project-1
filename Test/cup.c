@@ -50,6 +50,20 @@ void foo3() {
     write(4);
     write(4,4);
     break;
+
+    switch(a+a) {
+        case 1:
+            ba = 3;
+            break;
+        case 2:
+            a += 2;
+            break;
+        case 3:
+            a = e + 3;
+            break;
+        default:
+            a = 3;
+    }
 }
 
 

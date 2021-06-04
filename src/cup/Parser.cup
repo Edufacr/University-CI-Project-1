@@ -21,7 +21,7 @@ Terminals
 // Identifiers
 terminal IDENTIFIER; 
 // Special Symbols
-terminal SEMICOLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
+terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
 terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
 // Mandatory Types
@@ -88,6 +88,9 @@ non terminal call, args, argList;
 // Flow Control 
 non terminal ifStmt, iterStmt, switchStmt;
 
+// Switch 
+non terminal switchBody, caseList, case, defaultCase;
+
 // Commmands
 non terminal returnStmt, continueStmt, breakStmt;
 
@@ -146,15 +149,22 @@ params ::=        paramList
     • En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
     puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
     expresión es numérica
+    
+    Errores:
 
+    Buscar errores por bloque
+    Por ejemplo declaraciones de variables error, if error, while
+    Se puede hacer más detallado cómo en la exp del if o en el body
+    No se puede recuper de todos los errores
+    Lo importante es que se ubique en la linea y en el bloque donde esta
     
     Preguntas:
     Se pueden declarar solo variables dentro de una foo?
+        Se pueden declarar variables del todo dentro de una función
     Las asignaciones se consideran numericas para el switch?
     Se pueden hacer bloques sin nada?
     Se pueden poner identifiers como exp?
     Donde se pone el DO?
-    No importa que se pongan declaraciones dentro de los if 
     i++ se tiene que definir o solo ++i
 
 */
@@ -176,21 +186,23 @@ stmt ::=        exprStmt
                 | continueStmt 
                 | breakStmt
                 | functionsStmt 
+                | switchStmt 
                 ;
-                // | switchStmt 
 
 exprStmt ::=    expr SEMICOLON;
                 //| SEMICOLON;
 
 // Flow Control 
-ifStmt ::=      IF LPAREN expr RPAREN codeBlock
-                | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
+ifStmt ::=            IF LPAREN expr RPAREN codeBlock
+                    | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
 
-iterStmt ::=    WHILE LPAREN expr RPAREN codeBlock
-                | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
-                ;
+iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
+                    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                    ;
 
-returnStmt ::=        RETURN expr SEMICOLON;
+returnStmt ::=        RETURN expr SEMICOLON
+                    | RETURN SEMICOLON
+                    ;
 
 breakStmt ::=         BREAK SEMICOLON;
 
@@ -200,6 +212,21 @@ functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                     | READ LPAREN RPAREN SEMICOLON
                     | WRITE LPAREN argList RPAREN SEMICOLON
                     ;
+
+switchStmt ::=        SWITCH LPAREN expr RPAREN switchBody; // TODO: change to numeric expression
+
+switchBody ::=        LCURLY caseList RCURLY;
+
+caseList ::=          caseList case 
+                    | case
+                    | caseList defaultCase
+                    | defaultCase
+                    ;
+
+case ::=              CASE NUMCONST COLON stmtList;
+
+defaultCase ::=       DEFAULT COLON stmtList;
+
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 expr ::=            IDENTIFIER ASSIGN expr
@@ -237,13 +264,13 @@ sumExpr ::=       sumExpr sumOp mulExpr
                 | mulExpr
                 ;
 
-sumOp ::=   PLUS 
+sumOp ::=     PLUS 
             | MINUS;
 
-mulExpr ::=  mulExpr mulOp unaryExpr 
+mulExpr ::=   mulExpr mulOp unaryExpr 
             | unaryExpr;
 
-mulOp ::=   MULT 
+mulOp ::=     MULT 
             | DIV 
             | MOD;
 
