@@ -244,7 +244,7 @@ functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                     | WRITE error SEMICOLON                                                {: report_error("Write instruction"); :}
                     ;
 
-switchStmt ::=        SWITCH LPAREN expr RPAREN switchBody // TODO: change to numeric expression
+switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
                     | SWITCH error switchBody                                                {: report_error("Switch Statement"); :}
                     ;
 
@@ -276,7 +276,6 @@ expr ::=            IDENTIFIER ASSIGN expr
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
 simpleExpr ::=    simpleExpr OR andExpr 
-                | simpleExpr 
                 | andExpr
                 ;
 andExpr ::=       andExpr AND unaryRelExpr 
