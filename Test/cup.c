@@ -1,6 +1,9 @@
 int b;
 char b;
 int c;
+void foo(){
+    
+}
 void foo(int p1, char p2){
     const int a = 1;
     a =  1 && 1-2;

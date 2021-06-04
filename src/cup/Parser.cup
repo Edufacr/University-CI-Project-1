@@ -149,6 +149,9 @@ params ::=        paramList
     • En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
     puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
     expresión es numérica
+
+    Consideraciones ultimo video:
+
     
     Errores:
 
@@ -159,10 +162,9 @@ params ::=        paramList
     Lo importante es que se ubique en la linea y en el bloque donde esta
     
     Preguntas:
-    Se pueden declarar solo variables dentro de una foo?
-        Se pueden declarar variables del todo dentro de una función
-    Las asignaciones se consideran numericas para el switch?
-    Se pueden hacer bloques sin nada?
+
+    No importa que se declaren variables y const al inicio dentro de una foo?
+    Para el switch expresiones numericas son solo operaciones normales de numero o tambien ors y asi
     Se pueden poner identifiers como exp?
     Donde se pone el DO?
     i++ se tiene que definir o solo ++i
