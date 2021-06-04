@@ -34,7 +34,7 @@ terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
 
 //Boolean Operators
 //                                          <=          >=              >       <
-terminal AND, OR, EQUAL, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
+terminal AND, OR, EQUALS, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
 
 //Literals
 terminal Integer NUMCONST; 
@@ -72,10 +72,12 @@ non terminal codeBlock;
 non terminal stmtList, stmt, exprStmt,functionsStmt;
 
 // Expressions
-non terminal expr;
+non terminal expr, sumExpr, simpleExpr;
+// Bool Expr
+non terminal andExpr, unaryRelExpr, relExpr, relOp;
 
 // SumExpression
-non terminal sumExpr, mulExpr, unaryExpr, factor, immutable;
+non terminal mulExpr, unaryExpr, factor, immutable;
 
 // Operators
 non terminal sumOp, mulOp, unaryOp;
@@ -188,15 +190,16 @@ iterStmt ::=    WHILE LPAREN expr RPAREN codeBlock
                 | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
                 ;
 
-returnStmt ::=  RETURN expr SEMICOLON;
+returnStmt ::=        RETURN expr SEMICOLON;
 
-breakStmt ::=   BREAK SEMICOLON;
+breakStmt ::=         BREAK SEMICOLON;
 
-continueStmt ::= CONTINUE SEMICOLON;
+continueStmt ::=      CONTINUE SEMICOLON;
  
-functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN
-                    | READ LPAREN RPAREN
-                    | WRITE LPAREN argList RPAREN;
+functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
+                    | READ LPAREN RPAREN SEMICOLON
+                    | WRITE LPAREN argList RPAREN SEMICOLON
+                    ;
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 expr ::=            IDENTIFIER ASSIGN expr
@@ -205,19 +208,34 @@ expr ::=            IDENTIFIER ASSIGN expr
                 |   IDENTIFIER MULT_ASSIGN expr
                 |   IDENTIFIER DIV_ASSIGN expr
                 |   IDENTIFIER MOD_ASSIGN expr
-                |   IDENTIFIER PLUS_PLUS expr
-                |   IDENTIFIER MINUS_MINUS expr
-                |   IDENTIFIER EQUAL expr
-                |   IDENTIFIER LESS_EQUALS expr
-                |   IDENTIFIER GREATER_EQUALS expr
-                |   IDENTIFIER DISTINCT expr
-                |   IDENTIFIER OR expr
-                |   IDENTIFIER AND expr
-                |   sumExpr
+                |   simpleExpr
                 ; 
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
-sumExpr ::= sumExpr sumOp mulExpr | mulExpr;
+simpleExpr ::=    simpleExpr OR andExpr 
+                | andExpr
+                ;
+andExpr ::=       andExpr AND unaryRelExpr 
+                | unaryRelExpr
+                ;
+unaryRelExpr ::=  NOT unaryRelExpr 
+                | relExpr
+                ;
+relExpr ::=       sumExpr relOp sumExpr 
+                | sumExpr
+                ;
+
+relOp ::=         LESS_EQUALS 
+                | LESS 
+                | GREATER 
+                | GREATER_EQUALS 
+                | EQUALS 
+                | DISTINCT
+                ;
+
+sumExpr ::=       sumExpr sumOp mulExpr 
+                | mulExpr
+                ;
 
 sumOp ::=   PLUS 
             | MINUS;

@@ -104,7 +104,7 @@ StringBoundary = \"
     {Real}                         { this.out.addToken(yytext(), "Literales", yyline); }
 
     // Operators
-    "=="                           { return new Symbol(sym.EQUAL, yyline, yycolumn, "Equal"); }
+    "=="                           { return new Symbol(sym.EQUALS, yyline, yycolumn, "Equal"); }
     "<<="                          { this.out.addToken(yytext(), "Operadores", yyline); }
     ">>="                          { this.out.addToken(yytext(), "Operadores", yyline); }
     "<="                           { return new Symbol(sym.LESS_EQUALS, yyline, yycolumn, "Less equals"); }

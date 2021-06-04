@@ -12,6 +12,7 @@ public interface sym {
   public static final int MULT = 35;
   public static final int CONST = 12;
   public static final int CHAR = 25;
+  public static final int EQUALS = 45;
   public static final int PLUS_ASSIGN = 38;
   public static final int NUMCONST = 52;
   public static final int MINUS_MINUS = 32;
@@ -39,7 +40,6 @@ public interface sym {
   public static final int EOF = 0;
   public static final int RETURN = 21;
   public static final int PLUS_PLUS = 31;
-  public static final int EQUAL = 45;
   public static final int DISTINCT = 46;
   public static final int error = 1;
   public static final int LCURLY = 10;
@@ -108,7 +108,7 @@ public interface sym {
   "MOD_ASSIGN",
   "AND",
   "OR",
-  "EQUAL",
+  "EQUALS",
   "DISTINCT",
   "NOT",
   "LESS_EQUALS",
