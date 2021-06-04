@@ -6,39 +6,60 @@
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
-  public static final int RBRACK = 6;
-  public static final int READ = 29;
-  public static final int LONG = 27;
-  public static final int CONTINUE = 15;
-  public static final int ELSE = 18;
-  public static final int SEMICOLON = 3;
-  public static final int INT = 26;
-  public static final int RPAREN = 9;
-  public static final int CHAR = 25;
-  public static final int WHILE = 24;
-  public static final int LBRACK = 7;
-  public static final int RCURLY = 11;
-  public static final int RETURN = 21;
-  public static final int IDENTIFIER = 2;
-  public static final int SWITCH = 22;
-  public static final int IF = 20;
-  public static final int LPAREN = 8;
-  public static final int WRITE = 30;
-  public static final int STATIC = 32;
-  public static final int DO = 17;
-  public static final int NUMCONST = 31;
-  public static final int LCURLY = 10;
-  public static final int COMMA = 5;
-  public static final int EOF = 0;
-  public static final int BREAK = 13;
-  public static final int CONST = 12;
-  public static final int CASE = 14;
-  public static final int error = 1;
   public static final int SHORT = 28;
-  public static final int ASSIGN = 4;
-  public static final int DEFAULT = 16;
+  public static final int MULT = 35;
+  public static final int CONST = 12;
+  public static final int CHAR = 25;
+  public static final int PLUS_ASSIGN = 38;
+  public static final int NUMCONST = 52;
+  public static final int MINUS_MINUS = 32;
+  public static final int CASE = 14;
+  public static final int GREATER = 50;
+  public static final int LPAREN = 8;
+  public static final int CONTINUE = 15;
+  public static final int INT = 26;
+  public static final int LESS = 51;
   public static final int FOR = 19;
+  public static final int MINUS = 34;
+  public static final int WRITE = 30;
+  public static final int STATIC = 53;
+  public static final int RPAREN = 9;
+  public static final int NOT = 47;
+  public static final int AND = 43;
+  public static final int SEMICOLON = 3;
+  public static final int OR = 44;
+  public static final int COMMA = 5;
+  public static final int DIV = 36;
+  public static final int PLUS = 33;
+  public static final int GREATER_EQUALS = 49;
+  public static final int ASSIGN = 4;
+  public static final int IF = 20;
+  public static final int EOF = 0;
+  public static final int RETURN = 21;
+  public static final int PLUS_PLUS = 31;
+  public static final int EQUAL = 45;
+  public static final int DISTINCT = 46;
+  public static final int error = 1;
+  public static final int LCURLY = 10;
+  public static final int MOD = 37;
+  public static final int BREAK = 13;
   public static final int VOID = 23;
+  public static final int MOD_ASSIGN = 42;
+  public static final int DIV_ASSIGN = 41;
+  public static final int SWITCH = 22;
+  public static final int RCURLY = 11;
+  public static final int LBRACK = 7;
+  public static final int ELSE = 18;
+  public static final int LESS_EQUALS = 48;
+  public static final int READ = 29;
+  public static final int RBRACK = 6;
+  public static final int WHILE = 24;
+  public static final int DEFAULT = 16;
+  public static final int LONG = 27;
+  public static final int MULT_ASSIGN = 40;
+  public static final int MINUS_ASSIGN = 39;
+  public static final int DO = 17;
+  public static final int IDENTIFIER = 2;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -71,6 +92,27 @@ public interface sym {
   "SHORT",
   "READ",
   "WRITE",
+  "PLUS_PLUS",
+  "MINUS_MINUS",
+  "PLUS",
+  "MINUS",
+  "MULT",
+  "DIV",
+  "MOD",
+  "PLUS_ASSIGN",
+  "MINUS_ASSIGN",
+  "MULT_ASSIGN",
+  "DIV_ASSIGN",
+  "MOD_ASSIGN",
+  "AND",
+  "OR",
+  "EQUAL",
+  "DISTINCT",
+  "NOT",
+  "LESS_EQUALS",
+  "GREATER_EQUALS",
+  "GREATER",
+  "LESS",
   "NUMCONST",
   "STATIC"
   };

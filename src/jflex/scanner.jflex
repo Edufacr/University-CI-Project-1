@@ -104,39 +104,39 @@ StringBoundary = \"
     {Real}                         { this.out.addToken(yytext(), "Literales", yyline); }
 
     // Operators
-    "=="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+    "=="                           { return new Symbol(sym.EQUAL, yyline, yycolumn, "Equal"); }
     "<<="                          { this.out.addToken(yytext(), "Operadores", yyline); }
     ">>="                          { this.out.addToken(yytext(), "Operadores", yyline); }
-    "<="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    ">="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "!="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "+="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "-="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "*="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "/="                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "%="                           { this.out.addToken(yytext(), "Operadores", yyline); }
+    "<="                           { return new Symbol(sym.LESS_EQUALS, yyline, yycolumn, "Less equals"); }
+    ">="                           { return new Symbol(sym.GREATER_EQUALS, yyline, yycolumn, "Greater Equals"); }
+    "!="                           { return new Symbol(sym.DISTINCT, yyline, yycolumn, "Distinct"); }
+    "+="                           { return new Symbol(sym.PLUS_ASSIGN, yyline, yycolumn, "Plus Assign"); }
+    "-="                           { return new Symbol(sym.MINUS_ASSIGN, yyline, yycolumn, "Minus Assign"); }
+    "*="                           { return new Symbol(sym.MULT_ASSIGN, yyline, yycolumn, "Mult Assign"); }
+    "/="                           { return new Symbol(sym.DIV_ASSIGN, yyline, yycolumn, "Div Assign"); }
+    "%="                           { return new Symbol(sym.MOD_ASSIGN, yyline, yycolumn, "Mod Assign"); }
     "&="                           { this.out.addToken(yytext(), "Operadores", yyline); }
     "^="                           { this.out.addToken(yytext(), "Operadores", yyline); }
     "|="                           { this.out.addToken(yytext(), "Operadores", yyline); }
     ">>"                           { this.out.addToken(yytext(), "Operadores", yyline); }
     "<<"                           { this.out.addToken(yytext(), "Operadores", yyline); }
     "->"                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "||"                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "&&"                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "++"                           { this.out.addToken(yytext(), "Operadores", yyline); }
-    "--"                           { this.out.addToken(yytext(), "Operadores", yyline); }
+    "||"                           { return new Symbol(sym.OR, yyline, yycolumn, "or"); }
+    "&&"                           { return new Symbol(sym.AND, yyline, yycolumn, "and"); }
+    "++"                           { return new Symbol(sym.PLUS_PLUS, yyline, yycolumn, "++"); }
+    "--"                           { return new Symbol(sym.MINUS_MINUS, yyline, yycolumn, "--"); }
     "="                            { return new Symbol(sym.ASSIGN, yyline, yycolumn, "assign"); }
-    "+"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+    "+"                            { return new Symbol(sym.PLUS, yyline, yycolumn, "+"); }
     ","                            { return new Symbol(sym.COMMA, yyline, yycolumn, "comma"); }
     ";"                            { return new Symbol(sym.SEMICOLON, yyline, yycolumn, ";"); }
-    ">"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+    ">"                            { return new Symbol(sym.GREATER, yyline, yycolumn, "Greater"); }
     "?"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "<"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "!"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "-"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "*"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "/"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "%"                            { this.out.addToken(yytext(), "Operadores", yyline); }
+    "<"                            { return new Symbol(sym.LESS, yyline, yycolumn, "Less"); }
+    "!"                            { return new Symbol(sym.NOT, yyline, yycolumn, "Not"); }
+    "-"                            { return new Symbol(sym.MINUS, yyline, yycolumn, "Minus"); }
+    "*"                            { return new Symbol(sym.MULT, yyline, yycolumn, "Mult"); }
+    "/"                            { return new Symbol(sym.DIV, yyline, yycolumn, "Div"); }
+    "%"                            { return new Symbol(sym.MOD, yyline, yycolumn, "Mod"); }
     "("                            { return new Symbol(sym.LPAREN, yyline, yycolumn, "("); }
     ")"                            { return new Symbol(sym.RPAREN, yyline, yycolumn, ")"); }
     "["                            { return new Symbol(sym.RBRACK, yyline, yycolumn, "["); }

@@ -29,18 +29,22 @@ terminal CHAR, INT, LONG, SHORT;
 // Mandatory Functions
 terminal READ, WRITE;
 // Numeric Operators
+terminal PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
+terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
 
 //Boolean Operators
+//                                          <=          >=              >       <
+terminal AND, OR, EQUAL, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
 
 //Literals
-terminal Integer NUMCONST;
+terminal Integer NUMCONST; 
 
 // Extra Reserved Words
 terminal STATIC;
 
 /* 
 --------------
- Non terminals
+Non terminals
 --------------
 */
 
@@ -52,15 +56,33 @@ non terminal constDecl, varDecl, varDeclList;
 
 // Literals
 non terminal literals;
+
 // Types
 non terminal typeSpec;
-non terminal funcTypes;
 
 // Functions
-non terminal funcDecl, funcBody, paramList, params, otherFunctions, functionOne;
-non terminal stmt;
+non terminal funcDecl, paramList, params;
+
+// CodeBlock
+non terminal codeBlock;
+
+// Statements
+non  terminal stmtList, stmt, exprStmt;
+
+// Expressions
+non terminal expr, numExpr;
+
+// Flow Control 
+non terminal ifStmt, whileStmt, forStmt, switchStmt;
+
+// Commmands
+non terminal returnStmt, continueStmt, breakStmt;
+
+
 
 start with program;
+
+
 /* 
 --------------
 Grammar Rules
@@ -71,7 +93,9 @@ Grammar Rules
 program  ::=       decls;
 
 decls    ::=      vars functions
-                  | functions;
+                  | functions
+                  | vars error 
+                  ;
 
 vars    ::=       vars varDecl
                 | vars constDecl
@@ -91,8 +115,8 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER
 functions ::=       functions funcDecl
                  |  funcDecl;
 
-funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
-                | VOID IDENTIFIER LPAREN params RPAREN funcBody;
+funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN codeBlock
+                | VOID IDENTIFIER LPAREN params RPAREN  codeBlock;
 
 paramList ::=      typeSpec IDENTIFIER COMMA paramList
                 |  typeSpec IDENTIFIER;
@@ -101,51 +125,61 @@ params ::=        paramList
                 | ; //epsilon
 
 /*
- En el cuerpo de una función puede venir expresiones, o estructuras de control, instrucciones como read, 
-write, break, continue
-• Las estructuras de control son: if, if-else, for, while, switch.
-• Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 
-• En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
-puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
-expresión es numérica
+    En el cuerpo de una función puede venir expresiones, o estructuras de control, instrucciones como read, 
+    write, break, continue
+    • Las estructuras de control son: if, if-else, for, while, switch.
+    • Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 
+    • En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
+    puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
+    expresión es numérica
 
-Preguntas
-Se pueden declarar solo variables dentro de una foo?
-Las asignaciones se consideran numericas para el switch?
+    
+    Preguntas:
+    Se pueden declarar solo variables dentro de una foo?
+    Las asignaciones se consideran numericas para el switch?
+    Se pueden hacer bloques sin nada?
 
 */
 
-stmtList ::=    stmtLists stmt
-                | ; //epsilon
+// CodeBlock
+codeBlock ::=   LCURLY vars stmtList RCURLY 
+                    | LCURLY vars RCURLY 
+                    | LCURLY stmtList RCURLY
+                    | LCURLY RCURLY
+                    ;
+// Statements
+stmtList ::=    stmtList stmt
+                | stmt;
 
 stmt ::=        exprStmt
-                | ifStmt 
-                | whileStmt 
-                | forStmt 
-                | switchStmt 
-                | returnStmt 
-                | continueStmt 
-                | breakStmt;
-
-funcBody ::=   LCURLY vars stmtList RCURLY 
-                    | LCURLY vars RCURLY 
-                    | LCURLY stmtList RCURLY;
-
-sprtStmt ::=    expr SEMICOLON
-                | SEMICOLON;
-
-ifStmt ::=      IF LPAREN expr RPAREN stmt
-                | IF LPAREN expr RPAREN stmt ELSE stmt;
-
-expr ::=        IDENTIFIER ASSIGN expr
-                | numExpr; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
-
-numExpr ::=     IDENTIFIER PLUS_PLUS 
+                | ifStmt
                 ;
+                // | whileStmt 
+                // | forStmt 
+                // | switchStmt 
+                // | returnStmt 
+                // | continueStmt 
+                // | breakStmt; 
 
+exprStmt ::=    expr SEMICOLON;
+                //| SEMICOLON;
 
+// Flow Control 
+// ! No estan aceptando IDENTIFIERS
+ifStmt ::=      IF LPAREN expr RPAREN codeBlock
+                | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
+
+// Expressions
+// Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
+expr ::=        IDENTIFIER ASSIGN expr
+                | literals;
+              //  | numExpr 
+              //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
+
+// numExpr ::=     IDENTIFIER PLUS_PLUS 
+//                 ;
 
 // Literals
 literals ::=      NUMCONST;
