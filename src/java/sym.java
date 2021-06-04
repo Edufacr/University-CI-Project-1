@@ -6,7 +6,9 @@
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
+  public static final int STRINGS = 53;
   public static final int SHORT = 28;
+  public static final int CHARS = 54;
   public static final int MULT = 35;
   public static final int CONST = 12;
   public static final int CHAR = 25;
@@ -22,7 +24,7 @@ public interface sym {
   public static final int FOR = 19;
   public static final int MINUS = 34;
   public static final int WRITE = 30;
-  public static final int STATIC = 53;
+  public static final int STATIC = 55;
   public static final int RPAREN = 9;
   public static final int NOT = 47;
   public static final int AND = 43;
@@ -114,6 +116,8 @@ public interface sym {
   "GREATER",
   "LESS",
   "NUMCONST",
+  "STRINGS",
+  "CHARS",
   "STATIC"
   };
 }

@@ -38,6 +38,8 @@ terminal AND, OR, EQUAL, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LE
 
 //Literals
 terminal Integer NUMCONST; 
+terminal String  STRINGS;
+terminal Character CHARS;
 
 // Extra Reserved Words
 terminal STATIC;
@@ -67,17 +69,16 @@ non terminal funcDecl, paramList, params;
 non terminal codeBlock;
 
 // Statements
-non  terminal stmtList, stmt, exprStmt;
+non terminal stmtList, stmt, exprStmt;
 
 // Expressions
-non terminal expr, numExpr;
+non terminal expr, numExpr, sumExp, sumOp, mulExp, mulop, unaryExp, factor, immutable, call, args, argList, unaryop;
 
 // Flow Control 
 non terminal ifStmt, whileStmt, forStmt, switchStmt;
 
 // Commmands
 non terminal returnStmt, continueStmt, breakStmt;
-
 
 
 start with program;
@@ -140,6 +141,7 @@ params ::=        paramList
     Se pueden declarar solo variables dentro de una foo?
     Las asignaciones se consideran numericas para el switch?
     Se pueden hacer bloques sin nada?
+    Se pueden poner identifiers como exp?
 
 */
 
@@ -167,22 +169,71 @@ exprStmt ::=    expr SEMICOLON;
                 //| SEMICOLON;
 
 // Flow Control 
-// ! No estan aceptando IDENTIFIERS
 ifStmt ::=      IF LPAREN expr RPAREN codeBlock
                 | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
 
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-expr ::=        IDENTIFIER ASSIGN expr
-                | literals;
-              //  | numExpr 
+expr ::=            IDENTIFIER ASSIGN expr
+                |   IDENTIFIER PLUS_ASSIGN expr
+                |   IDENTIFIER MINUS_ASSIGN expr
+                |   IDENTIFIER MULT_ASSIGN expr
+                |   IDENTIFIER DIV_ASSIGN expr
+                |   IDENTIFIER MOD_ASSIGN expr
+                |   IDENTIFIER PLUS_PLUS expr
+                |   IDENTIFIER MINUS_MINUS expr
+                |   IDENTIFIER EQUAL expr
+                |   IDENTIFIER LESS_EQUALS expr
+                |   IDENTIFIER GREATER_EQUALS expr
+                |   IDENTIFIER DISTINCT expr
+                |   IDENTIFIER OR expr
+                |   IDENTIFIER AND expr
+                |   sumExp
+                ; 
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
-// numExpr ::=     IDENTIFIER PLUS_PLUS 
+//Intento empirico con ambiguedad
+
+// numExpr ::=         numExpr + numExpr 
+//                 |   numExpr - numExpr 
+//                 |   numExpr * numExpr 
+//                 |   numExpr / numExpr 
+//                 | ( numExpr ) 
+//                 | literals 
 //                 ;
 
+sumExp ::= sumExp sumOp mulExp | mulExp;
+
+sumOp ::= PLUS | MINUS;
+
+mulExp ::= mulExp mulop unaryExp | unaryExp;
+
+mulop ::=  MULT | DIV | MOD;
+
+unaryExp ::= unaryop unaryExp | factor;
+
+unaryop ::= MINUS | MULT;
+
+factor ::= immutable | IDENTIFIER;
+
+immutable ::= LPAREN expr RPAREN 
+            | call
+            | literals;
+            //| constant //como NUMCONST | CHARCONST | STRINGCONST | true | false pero no se si aplican
+
+call ::= IDENTIFIER LPAREN args RPAREN;
+
+args ::= argList 
+        | ;
+
+argList ::= argList COMMA expr | expr;
+
+
 // Literals
-literals ::=      NUMCONST;
+literals ::=      NUMCONST
+                | CHARS
+                | STRINGS
+                ;
 
 // Types
 typeSpec ::=      INT 
