@@ -3,8 +3,21 @@ import java_cup.runtime.*;
 
 parser code
 {:
+
+    public void report_error(String sectionName){
+        System.out.println("Sección: " + sectionName );
+    }
+
+    public void report_error(String sectionName, String message){
+        report_error(sectionName);
+        System.out.println(message);
+    }
+
     public void syntax_error(Symbol s){
-        System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        System.out.println("------------------");
+        System.out.println("Error de Sintaxis:");
+        // Cuando no hay nada despues no es unexpected token
+        System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
@@ -109,7 +122,7 @@ program  ::=       decls;
 
 decls    ::=      vars functions
                   | functions
-                  | vars error 
+                  | vars error      {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
                   ;
 
 vars    ::=       vars varDecl
@@ -118,26 +131,34 @@ vars    ::=       vars varDecl
                 | constDecl;
 
 // Const & Vars Declaration
-constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON;
+constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
+                | CONST error SEMICOLON {: report_error("Declaracion de Constante"); :}
+                ;
 
 varDecl   ::=     typeSpec varDeclList SEMICOLON
-                | error SEMICOLON; // Tirar un error hasta ; pero se recupera 
+                | typeSpec error SEMICOLON {: report_error("Declaracion de Variable"); :}
+                ; 
 
-varDeclList ::=   varDeclList COMMA IDENTIFIER 
-               | IDENTIFIER;
+varDeclList ::=   varDeclList COMMA IDENTIFIER
+                | IDENTIFIER
+                ;
 
 // Functions
 functions ::=       functions funcDecl
                  |  funcDecl;
 
 funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN codeBlock
-                | VOID IDENTIFIER LPAREN params RPAREN  codeBlock;
+                | VOID IDENTIFIER LPAREN params RPAREN  codeBlock
+                | error codeBlock                                       {: report_error("Declaracion de Funcion"); :}
+                ;
+
+params ::=        paramList 
+                | ; //epsilon
 
 paramList ::=      typeSpec IDENTIFIER COMMA paramList
                 |  typeSpec IDENTIFIER;
 
-params ::=        paramList 
-                | ; //epsilon
+
 
 /*
 
@@ -176,6 +197,7 @@ codeBlock ::=   LCURLY vars stmtList RCURLY
                     | LCURLY vars RCURLY 
                     | LCURLY stmtList RCURLY
                     | LCURLY RCURLY
+                    | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
                     ;
 // Statements
 stmtList ::=    stmtList stmt
@@ -191,15 +213,20 @@ stmt ::=        exprStmt
                 | switchStmt 
                 ;
 
-exprStmt ::=    expr SEMICOLON;
-                //| SEMICOLON;
+exprStmt ::=    expr SEMICOLON
+                | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
+                ; 
 
 // Flow Control 
 ifStmt ::=            IF LPAREN expr RPAREN codeBlock
-                    | IF LPAREN expr RPAREN codeBlock ELSE codeBlock;
+                    | IF LPAREN expr RPAREN codeBlock ELSE codeBlock
+                    | IF error codeBlock                                                   {: report_error("If statement"); :}
+                    ;
 
 iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
+                    | WHILE error codeBlock                                                {: report_error("While statement"); :}
                     | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                    | FOR error codeBlock                                                  {: report_error("For statement"); :}
                     ;
 
 returnStmt ::=        RETURN expr SEMICOLON
@@ -212,10 +239,14 @@ continueStmt ::=      CONTINUE SEMICOLON;
  
 functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                     | READ LPAREN RPAREN SEMICOLON
+                    | READ error SEMICOLON                                                {: report_error("Read instruction"); :}
                     | WRITE LPAREN argList RPAREN SEMICOLON
+                    | WRITE error SEMICOLON                                                {: report_error("Write instruction"); :}
                     ;
 
-switchStmt ::=        SWITCH LPAREN expr RPAREN switchBody; // TODO: change to numeric expression
+switchStmt ::=        SWITCH LPAREN expr RPAREN switchBody // TODO: change to numeric expression
+                    | SWITCH error switchBody                                                {: report_error("Switch Statement"); :}
+                    ;
 
 switchBody ::=        LCURLY caseList RCURLY;
 
@@ -225,9 +256,12 @@ caseList ::=          caseList case
                     | defaultCase
                     ;
 
-case ::=              CASE NUMCONST COLON stmtList;
+case ::=              CASE NUMCONST COLON stmtList
+                    | CASE error stmtList                                                {: report_error("Case Statement"); :}
+                    ;
 
-defaultCase ::=       DEFAULT COLON stmtList;
+defaultCase ::=       DEFAULT COLON stmtList
+                    | DEFAULT error stmtList                                             {: report_error("Default Statement"); :};
 
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
@@ -242,6 +276,7 @@ expr ::=            IDENTIFIER ASSIGN expr
               //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
 simpleExpr ::=    simpleExpr OR andExpr 
+                | simpleExpr 
                 | andExpr
                 ;
 andExpr ::=       andExpr AND unaryRelExpr 
@@ -250,6 +285,8 @@ andExpr ::=       andExpr AND unaryRelExpr
 unaryRelExpr ::=  NOT unaryRelExpr 
                 | relExpr
                 ;
+
+// ?Equals y Distinct solo para sumExp?
 relExpr ::=       sumExpr relOp sumExpr 
                 | sumExpr
                 ;
@@ -291,7 +328,6 @@ immutable ::=   LPAREN expr RPAREN
                 | literals
                 | call
                 ;
-            //| constant //como NUMCONST | CHARCONST | STRINGCONST | true | false pero no se si aplican
 
 call ::=    IDENTIFIER LPAREN args RPAREN;
 

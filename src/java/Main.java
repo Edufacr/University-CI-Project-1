@@ -9,6 +9,11 @@ class Main {
         Parser p = new Parser(scanner);
         
         try {
+            System.out.println("-------------");
+            System.out.println("Inicia Parseo");
+            System.out.println("-------------");
+            System.out.println();
+
             p.parse();
             // if(p.parse().parse_state != 1){
             //     System.out.println("-----------------------------");
@@ -16,11 +21,10 @@ class Main {
             //     System.out.println("-----------------------------");
             //     p.debug_parse();
             // }
-            // else{
-                System.out.println("-----------------------------");
-                System.out.println("Success!");
-                System.out.println("-----------------------------");
-            // }
+            System.out.println();
+            System.out.println("-------------");
+            System.out.println("Finaliza Parseo");
+            System.out.println("-------------");
         }
         catch (Exception e) {
             System.out.println("Caught an exception.");
