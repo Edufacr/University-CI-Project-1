@@ -76,7 +76,7 @@ non terminal literals;
 non terminal typeSpec;
 
 // Functions
-non terminal funcDecl, paramList, params;
+non terminal funcDecl, paramList, params, funcBody;
 
 // CodeBlock
 non terminal codeBlock;
@@ -147,9 +147,9 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER
 functions ::=       functions funcDecl
                  |  funcDecl;
 
-funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN codeBlock
-                | VOID IDENTIFIER LPAREN params RPAREN  codeBlock
-                | error codeBlock                                       {: report_error("Declaracion de Funcion"); :}
+funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
+                | VOID IDENTIFIER LPAREN params RPAREN  funcBody
+                | error funcBody                                       {: report_error("Declaracion de Funcion"); :}
                 ;
 
 params ::=        paramList 
@@ -184,21 +184,24 @@ paramList ::=      typeSpec IDENTIFIER COMMA paramList
     
     Preguntas:
 
-    No importa que se declaren variables y const al inicio dentro de una foo?
-    Para el switch expresiones numericas son solo operaciones normales de numero o tambien ors y asi
-    Se pueden poner identifiers como exp?
-    Donde se pone el DO?
     i++ se tiene que definir o solo ++i
 
 */
 
-// CodeBlock
-codeBlock ::=   LCURLY vars stmtList RCURLY 
+// FuncBody
+funcBody ::=   LCURLY vars stmtList RCURLY 
                     | LCURLY vars RCURLY 
                     | LCURLY stmtList RCURLY
                     | LCURLY RCURLY
+                    | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
+                    ;
+
+// CodeBlock
+codeBlock ::=         LCURLY stmtList RCURLY
+                    | LCURLY RCURLY
                     | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
                     ;
+
 // Statements
 stmtList ::=    stmtList stmt
                 | stmt;
@@ -216,7 +219,7 @@ stmt ::=        exprStmt
 exprStmt ::=    expr SEMICOLON
                 | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
                 ; 
-
+     
 // Flow Control 
 ifStmt ::=            IF LPAREN expr RPAREN codeBlock
                     | IF LPAREN expr RPAREN codeBlock ELSE codeBlock
@@ -273,7 +276,6 @@ expr ::=            IDENTIFIER ASSIGN expr
                 |   IDENTIFIER MOD_ASSIGN expr
                 |   simpleExpr
                 ; 
-              //  ; // TODO: Tomar en cuenta la expresion del switch que es solo numerica 
 
 simpleExpr ::=    simpleExpr OR andExpr 
                 | andExpr
@@ -312,6 +314,7 @@ mulOp ::=     MULT
             | DIV 
             | MOD;
 
+//Hay que revisar
 unaryExpr ::= unaryOp unaryExpr
             | factor;
 
