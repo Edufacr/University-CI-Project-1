@@ -16,12 +16,18 @@ parser code
     public void syntax_error(Symbol s){
         System.out.println("------------------");
         System.out.println("Error de Sintaxis:");
-        // Cuando no hay nada despues no es unexpected token
+        // FIXME: Cuando no hay nada despues no es unexpected token
         System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        if(s.value == null){
+            System.out.println("Unrecovered Syntax Error At EOF: More tokens needed to recover.");
+        }
+        else{
+            System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
+        
     }
 :}
 
@@ -56,7 +62,6 @@ terminal Character CHARS;
 
 // Extra Reserved Words
 terminal STATIC;
-
 /* 
 --------------
 Non terminals
@@ -118,11 +123,12 @@ Grammar Rules
 */
 
 // Program Structure
-program  ::=       decls;
+program  ::=       decls 
+                    ;
 
 decls    ::=      vars functions
                   | functions
-                  | vars error      {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                  | vars error           {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
                   ;
 
 vars    ::=       vars varDecl
@@ -132,11 +138,15 @@ vars    ::=       vars varDecl
 
 // Const & Vars Declaration
 constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
-                | CONST error SEMICOLON {: report_error("Declaracion de Constante"); :}
+                | CONST error 
+                    {: report_error("Declaracion de Constante"); :} 
+                  SEMICOLON 
                 ;
 
 varDecl   ::=     typeSpec varDeclList SEMICOLON
-                | typeSpec error SEMICOLON {: report_error("Declaracion de Variable"); :}
+                | typeSpec error
+                  {: report_error("Declaracion de Variable"); :}
+                  SEMICOLON 
                 ; 
 
 varDeclList ::=   varDeclList COMMA IDENTIFIER
@@ -145,11 +155,16 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER
 
 // Functions
 functions ::=       functions funcDecl
-                 |  funcDecl;
+                 |  funcDecl
+                 |  error {: report_error("Funciones del Programa"); :} 
+                    funcDecl  
+                 ;
 
 funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
                 | VOID IDENTIFIER LPAREN params RPAREN  funcBody
-                | error funcBody                                       {: report_error("Declaracion de Funcion"); :}
+                | error 
+                  {: report_error("Declaracion de Funcion"); :} 
+                  funcBody                                       
                 ;
 
 params ::=        paramList 
@@ -223,7 +238,7 @@ exprStmt ::=    expr SEMICOLON
 // Flow Control 
 ifStmt ::=            IF LPAREN expr RPAREN codeBlock
                     | IF LPAREN expr RPAREN codeBlock ELSE codeBlock
-                    | IF error codeBlock                                                   {: report_error("If statement"); :}
+                    | IF error codeBlock                                                   {: report_error("If statement"); :}               
                     ;
 
 iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
@@ -234,6 +249,7 @@ iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
 
 returnStmt ::=        RETURN expr SEMICOLON
                     | RETURN SEMICOLON
+                    | RETURN error SEMICOLON                                               {: report_error("Return statement"); :}
                     ;
 
 breakStmt ::=         BREAK SEMICOLON;
@@ -248,10 +264,12 @@ functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                     ;
 
 switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
-                    | SWITCH error switchBody                                                {: report_error("Switch Statement"); :}
+                    | SWITCH error switchBody                                              {: report_error("Switch Statement"); :}
                     ;
 
-switchBody ::=        LCURLY caseList RCURLY;
+switchBody ::=        LCURLY caseList RCURLY                                                
+                      LCURLY error RCURLY                                                 {: report_error("Switch Body"); :}
+                    ;
 
 caseList ::=          caseList case 
                     | case
@@ -276,6 +294,12 @@ expr ::=            IDENTIFIER ASSIGN expr
                 |   IDENTIFIER MOD_ASSIGN expr
                 |   simpleExpr
                 ; 
+expr ::=            IDENTIFIER ASSIGN expr
+                |   IDENTIFIER PLUS_ASSIGN expr
+                |   IDENTIFIER MINUS_ASSIGN expr
+                |   IDENTIFIER MULT_ASSIGN expr
+                |   IDENTIFIER DIV_ASSIGN expr
+                |   IDENTIFIER MOD_ASSIGN expr
 
 simpleExpr ::=    simpleExpr OR andExpr 
                 | andExpr
@@ -287,7 +311,6 @@ unaryRelExpr ::=  NOT unaryRelExpr
                 | relExpr
                 ;
 
-// ?Equals y Distinct solo para sumExp?
 relExpr ::=       sumExpr relOp sumExpr 
                 | sumExpr
                 ;
@@ -338,7 +361,6 @@ args ::=    argList
 
 argList ::=     argList COMMA expr 
                 | expr;
-
 
 // Literals
 literals ::=      NUMCONST

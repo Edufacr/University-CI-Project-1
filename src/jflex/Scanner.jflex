@@ -17,6 +17,7 @@ import java_cup.runtime.*;
 %eof{
     this.out.printResult();    
     //return new Symbol(sym.EOF, yyline, yycolumn, "Lexic Error");
+    //return new java_cup.runtime.Symbol(<CUPSYM>.EOF);
 %eof}
 
 LineTerminator = \r|\n|\r\n
