@@ -16,25 +16,27 @@ parser code
     public void syntax_error(Symbol s){
         System.out.println("------------------");
         System.out.println("Error de Sintaxis:");
-        // FIXME: Cuando no hay nada despues no es unexpected token
-        System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        if(s.value == null){
+            System.out.println("Unexpected EOF: More Tokens Expected " );
+        }
+        else{
+            System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
         if(s.value == null){
             System.out.println("Unrecovered Syntax Error At EOF: More tokens needed to recover.");
         }
-        else{
+        else {
             System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
         }
-        
     }
 :}
 
 /* 
 --------------
-Terminals
---------------
+Terminals --------------
 */
 
 // Identifiers
@@ -91,20 +93,25 @@ non terminal stmtList, stmt, exprStmt,functionsStmt;
 
 // Expressions
 non terminal expr, sumExpr, simpleExpr;
+
+// Assignations
+non terminal assignOp;
+
 // Bool Expr
 non terminal andExpr, unaryRelExpr, relExpr, relOp;
 
 // SumExpression
 non terminal mulExpr, unaryExpr, factor, immutable;
 
+
 // Operators
-non terminal sumOp, mulOp, unaryOp;
+non terminal sumOp, mulOp, unaryOp, doubleUnaryOp;
 
 // Calls
 non terminal call, args, argList;
 
 // Flow Control 
-non terminal ifStmt, iterStmt, switchStmt;
+non terminal ifStmt,elseStmt, iterStmt, switchStmt;
 
 // Switch 
 non terminal switchBody, caseList, case, defaultCase;
@@ -173,36 +180,6 @@ params ::=        paramList
 paramList ::=      typeSpec IDENTIFIER COMMA paramList
                 |  typeSpec IDENTIFIER;
 
-
-
-/*
-
-    En el cuerpo de una función puede venir expresiones, o estructuras de control, instrucciones como read, 
-    write, break, continue
-    • Las estructuras de control son: if, if-else, for, while, switch.
-    • Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-
-    • En el caso de las estructuras de control if, for y while en su expresión no deben validar que sea booleana, 
-    puede ser cualquier tipo de expresión incluso una asignación. En el caso de switch debe validar que la 
-    expresión es numérica
-
-    Consideraciones ultimo video:
-
-    
-    Errores:
-
-    Buscar errores por bloque
-    Por ejemplo declaraciones de variables error, if error, while
-    Se puede hacer más detallado cómo en la exp del if o en el body
-    No se puede recuper de todos los errores
-    Lo importante es que se ubique en la linea y en el bloque donde esta
-    
-    Preguntas:
-
-    i++ se tiene que definir o solo ++i
-
-*/
-
 // FuncBody
 funcBody ::=   LCURLY vars stmtList RCURLY 
                     | LCURLY vars RCURLY 
@@ -228,7 +205,7 @@ stmt ::=        exprStmt
                 | continueStmt 
                 | breakStmt
                 | functionsStmt 
-                | switchStmt 
+                | switchStmt
                 ;
 
 exprStmt ::=    expr SEMICOLON
@@ -236,20 +213,29 @@ exprStmt ::=    expr SEMICOLON
                 ; 
      
 // Flow Control 
-ifStmt ::=            IF LPAREN expr RPAREN codeBlock
-                    | IF LPAREN expr RPAREN codeBlock ELSE codeBlock
-                    | IF error codeBlock                                                   {: report_error("If statement"); :}               
+ifStmt ::=            IF LPAREN expr RPAREN codeBlock elseStmt
+                    | IF error
+                      {: report_error("If statement"); :}
+                      codeBlock elseStmt                                                 
                     ;
+elseStmt ::=          ELSE codeBlock
+                    | ; // epsilon
 
 iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
-                    | WHILE error codeBlock                                                {: report_error("While statement"); :}
+                    | WHILE error 
+                      {: report_error("While statement"); :}
+                      codeBlock
                     | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
-                    | FOR error codeBlock                                                  {: report_error("For statement"); :}
+                    | FOR error 
+                      {: report_error("For statement"); :}
+                      codeBlock                                                  
                     ;
 
 returnStmt ::=        RETURN expr SEMICOLON
                     | RETURN SEMICOLON
-                    | RETURN error SEMICOLON                                               {: report_error("Return statement"); :}
+                    | RETURN error 
+                      {: report_error("Return statement"); :}
+                      SEMICOLON                                               
                     ;
 
 breakStmt ::=         BREAK SEMICOLON;
@@ -282,25 +268,24 @@ case ::=              CASE NUMCONST COLON stmtList
                     ;
 
 defaultCase ::=       DEFAULT COLON stmtList
-                    | DEFAULT error stmtList                                             {: report_error("Default Statement"); :};
-
+                    | DEFAULT error stmtList                                             {: report_error("Default Statement"); :}
+                    ;
+            
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-expr ::=            IDENTIFIER ASSIGN expr
-                |   IDENTIFIER PLUS_ASSIGN expr
-                |   IDENTIFIER MINUS_ASSIGN expr
-                |   IDENTIFIER MULT_ASSIGN expr
-                |   IDENTIFIER DIV_ASSIGN expr
-                |   IDENTIFIER MOD_ASSIGN expr
+expr ::=            IDENTIFIER assignOp expr
+                |   IDENTIFIER assignOp error                                           {: report_error("Assign Statement"); :}
                 |   simpleExpr
                 ; 
-expr ::=            IDENTIFIER ASSIGN expr
-                |   IDENTIFIER PLUS_ASSIGN expr
-                |   IDENTIFIER MINUS_ASSIGN expr
-                |   IDENTIFIER MULT_ASSIGN expr
-                |   IDENTIFIER DIV_ASSIGN expr
-                |   IDENTIFIER MOD_ASSIGN expr
 
+assignOp ::=      ASSIGN
+                | PLUS_ASSIGN
+                | MINUS_ASSIGN
+                | MULT_ASSIGN
+                | DIV_ASSIGN
+                | MOD_ASSIGN
+                ; 
+                
 simpleExpr ::=    simpleExpr OR andExpr 
                 | andExpr
                 ;
@@ -337,19 +322,22 @@ mulOp ::=     MULT
             | DIV 
             | MOD;
 
-//Hay que revisar
-unaryExpr ::= unaryOp unaryExpr
-            | factor;
-
+unaryExpr ::= unaryOp factor
+            | factor
+            | doubleUnaryOp IDENTIFIER
+            | IDENTIFIER doubleUnaryOp
+            ;
 unaryOp ::=   MINUS
             | PLUS
-            | PLUS_PLUS
-            | MINUS_MINUS
             ;
+
+doubleUnaryOp ::=     PLUS_PLUS
+                    | MINUS_MINUS
+                    ;
 
 factor ::= immutable | IDENTIFIER;
 
-immutable ::=   LPAREN expr RPAREN 
+immutable ::=     LPAREN expr RPAREN 
                 | literals
                 | call
                 ;

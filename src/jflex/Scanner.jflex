@@ -96,7 +96,7 @@ StringBoundary = \"
     {Identifiers}                  { return new Symbol(sym.IDENTIFIER, yyline, yycolumn, yytext()); }
 
     // Literals
-    {Integer} {UnsignedLong}       { return new Symbol(sym.NUMCONST, yyline, yycolumn, "numconst"); }
+    {Integer} {UnsignedLong}       { return new Symbol(sym.NUMCONST, yyline, yycolumn, yytext()); }
 
     {Octal} {UnsignedLong}         { this.out.addToken(yytext(), "Literales", yyline); }
 
