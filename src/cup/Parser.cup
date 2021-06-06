@@ -185,6 +185,7 @@ funcBody ::=   LCURLY vars stmtList RCURLY
                     | LCURLY vars RCURLY 
                     | LCURLY stmtList RCURLY
                     | LCURLY RCURLY
+                    | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
                     | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
                     ;
 
@@ -196,7 +197,8 @@ codeBlock ::=         LCURLY stmtList RCURLY
 
 // Statements
 stmtList ::=    stmtList stmt
-                | stmt;
+                | stmt
+                ;
 
 stmt ::=        exprStmt
                 | ifStmt
