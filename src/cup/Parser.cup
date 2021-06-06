@@ -1,13 +1,373 @@
+/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 
-terminal PLUS, TIMES, LPAREN, RPAREN;
-terminal Integer NUMBER;
+parser code
+{:
 
-non terminal Integer expr, term, factor;
+    public void report_error(String sectionName){
+        System.out.println("Sección: " + sectionName );
+    }
 
-precedence left PLUS;
-precedence left TIMES;
+    public void report_error(String sectionName, String message){
+        report_error(sectionName);
+        System.out.println(message);
+    }
 
-expr ::= expr:e PLUS term:t {: RESULT = new Integer(e.intValue() + t.intValue()); :} | term:t {: RESULT = t; :} ;
-term ::= term:t TIMES factor:f {: RESULT = new Integer(t.intValue() * f.intValue()); :} | factor:f {: RESULT = f; :} ;
-factor ::= LPAREN expr:e RPAREN {: RESULT = e; :} | NUMBER:n {: RESULT = n; :};
+    public void syntax_error(Symbol s){
+        System.out.println("------------------");
+        System.out.println("Error de Sintaxis:");
+        if(s.value == null){
+            System.out.println("Unexpected EOF: More Tokens Expected " );
+        }
+        else{
+            System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+        if(s.value == null){
+            System.out.println("Unrecovered Syntax Error At EOF: More tokens needed to recover.");
+        }
+        else {
+            System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
+    }
+:}
+
+/* 
+--------------
+Terminals --------------
+*/
+
+// Identifiers
+terminal IDENTIFIER; 
+// Special Symbols
+terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
+// Mandatory Reserved Words
+terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
+// Mandatory Types
+terminal CHAR, INT, LONG, SHORT;
+// Mandatory Functions
+terminal READ, WRITE;
+// Numeric Operators
+terminal PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
+terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
+
+//Boolean Operators
+//                                          <=          >=              >       <
+terminal AND, OR, EQUALS, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
+
+//Literals
+terminal Integer NUMCONST; 
+terminal String  STRINGS;
+terminal Character CHARS;
+
+// Extra Reserved Words
+terminal STATIC;
+/* 
+--------------
+Non terminals
+--------------
+*/
+
+// Program Structure
+non terminal program, decls, vars, functions;
+
+// Const & Vars Declaration
+non terminal constDecl, varDecl, varDeclList;
+
+// Literals
+non terminal literals;
+
+// Types
+non terminal typeSpec;
+
+// Functions
+non terminal funcDecl, paramList, params, funcBody;
+
+// CodeBlock
+non terminal codeBlock;
+
+// Statements
+non terminal stmtList, stmt, exprStmt,functionsStmt;
+
+// Expressions
+non terminal expr, sumExpr, simpleExpr;
+
+// Assignations
+non terminal assignOp;
+
+// Bool Expr
+non terminal andExpr, unaryRelExpr, relExpr, relOp;
+
+// SumExpression
+non terminal mulExpr, unaryExpr, factor, immutable;
+
+
+// Operators
+non terminal sumOp, mulOp, unaryOp, doubleUnaryOp;
+
+// Calls
+non terminal call, args, argList;
+
+// Flow Control 
+non terminal ifStmt,elseStmt, iterStmt, switchStmt;
+
+// Switch 
+non terminal switchBody, caseList, case, defaultCase;
+
+// Commmands
+non terminal returnStmt, continueStmt, breakStmt;
+
+
+start with program;
+
+
+/* 
+--------------
+Grammar Rules
+--------------
+*/
+
+// Program Structure
+program  ::=       decls 
+                    ;
+
+decls    ::=      vars functions
+                  | functions
+                  | vars error           {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                  ;
+
+vars    ::=       vars varDecl
+                | vars constDecl
+                | varDecl
+                | constDecl;
+
+// Const & Vars Declaration
+constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
+                | CONST error 
+                    {: report_error("Declaracion de Constante"); :} 
+                  SEMICOLON 
+                ;
+
+varDecl   ::=     typeSpec varDeclList SEMICOLON
+                | typeSpec error
+                  {: report_error("Declaracion de Variable"); :}
+                  SEMICOLON 
+                ; 
+
+varDeclList ::=   varDeclList COMMA IDENTIFIER
+                | IDENTIFIER
+                ;
+
+// Functions
+functions ::=       functions funcDecl
+                 |  funcDecl
+                 |  error {: report_error("Funciones del Programa"); :} 
+                    funcDecl  
+                 ;
+
+funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
+                | VOID IDENTIFIER LPAREN params RPAREN  funcBody
+                | error 
+                  {: report_error("Declaracion de Funcion"); :} 
+                  funcBody                                       
+                ;
+
+params ::=        paramList 
+                | ; //epsilon
+
+paramList ::=      typeSpec IDENTIFIER COMMA paramList
+                |  typeSpec IDENTIFIER;
+
+// FuncBody
+funcBody ::=   LCURLY vars stmtList RCURLY 
+                    | LCURLY vars RCURLY 
+                    | LCURLY stmtList RCURLY
+                    | LCURLY RCURLY
+                    | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
+                    | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
+                    ;
+
+// CodeBlock
+codeBlock ::=         LCURLY stmtList RCURLY
+                    | LCURLY RCURLY
+                    | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
+                    ;
+
+// Statements
+stmtList ::=    stmtList stmt
+                | stmt
+                ;
+
+stmt ::=        exprStmt
+                | ifStmt
+                | iterStmt
+                | returnStmt 
+                | continueStmt 
+                | breakStmt
+                | functionsStmt 
+                | switchStmt
+                ;
+
+exprStmt ::=    expr SEMICOLON
+                | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
+                ; 
+     
+// Flow Control 
+ifStmt ::=            IF LPAREN expr RPAREN codeBlock elseStmt
+                    | IF error
+                      {: report_error("If statement"); :}
+                      codeBlock elseStmt                                                 
+                    ;
+elseStmt ::=          ELSE codeBlock
+                    | ; // epsilon
+
+iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
+                    | WHILE error 
+                      {: report_error("While statement"); :}
+                      codeBlock
+                    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                    | FOR error 
+                      {: report_error("For statement"); :}
+                      codeBlock                                                  
+                    ;
+
+returnStmt ::=        RETURN expr SEMICOLON
+                    | RETURN SEMICOLON
+                    | RETURN error 
+                      {: report_error("Return statement"); :}
+                      SEMICOLON                                               
+                    ;
+
+breakStmt ::=         BREAK SEMICOLON;
+
+continueStmt ::=      CONTINUE SEMICOLON;
+ 
+functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
+                    | READ LPAREN RPAREN SEMICOLON
+                    | READ error 
+                      {: report_error("Read instruction"); :}
+                      SEMICOLON                                                
+                    | WRITE LPAREN argList RPAREN SEMICOLON
+                    | WRITE error 
+                      {: report_error("Write instruction"); :}
+                      SEMICOLON                                                
+                    ;
+
+switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
+                    | SWITCH error 
+                      {: report_error("Switch Statement"); :}
+                      switchBody                                              
+                    ;
+
+switchBody ::=        LCURLY caseList RCURLY                 
+                    | LCURLY error 
+                      {: report_error("Switch Body"); :}
+                      RCURLY                     
+                    ;
+
+caseList ::=          caseList case 
+                    | case
+                    | caseList defaultCase
+                    | defaultCase
+                    ;
+
+case ::=              CASE NUMCONST COLON stmtList
+                    | CASE error stmtList                                                {: report_error("Case Statement"); :}
+                    ;
+
+defaultCase ::=       DEFAULT COLON stmtList
+                    | DEFAULT error stmtList                                             {: report_error("Default Statement"); :}
+                    ;
+            
+// Expressions
+// Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
+expr ::=            IDENTIFIER assignOp expr
+                |   IDENTIFIER assignOp error                                           {: report_error("Assign Statement"); :}
+                |   simpleExpr
+                ; 
+
+assignOp ::=      ASSIGN
+                | PLUS_ASSIGN
+                | MINUS_ASSIGN
+                | MULT_ASSIGN
+                | DIV_ASSIGN
+                | MOD_ASSIGN
+                ; 
+                
+simpleExpr ::=    simpleExpr OR andExpr 
+                | andExpr
+                ;
+andExpr ::=       andExpr AND unaryRelExpr 
+                | unaryRelExpr
+                ;
+unaryRelExpr ::=  NOT unaryRelExpr 
+                | relExpr
+                ;
+
+relExpr ::=       sumExpr relOp sumExpr 
+                | sumExpr
+                ;
+
+relOp ::=         LESS_EQUALS 
+                | LESS 
+                | GREATER 
+                | GREATER_EQUALS 
+                | EQUALS 
+                | DISTINCT
+                ;
+
+sumExpr ::=       sumExpr sumOp mulExpr 
+                | mulExpr
+                ;
+
+sumOp ::=     PLUS 
+            | MINUS;
+
+mulExpr ::=   mulExpr mulOp unaryExpr 
+            | unaryExpr;
+
+mulOp ::=     MULT 
+            | DIV 
+            | MOD;
+
+unaryExpr ::= unaryOp factor
+            | factor
+            | doubleUnaryOp IDENTIFIER
+            | IDENTIFIER doubleUnaryOp
+            ;
+unaryOp ::=   MINUS
+            | PLUS
+            ;
+
+doubleUnaryOp ::=     PLUS_PLUS
+                    | MINUS_MINUS
+                    ;
+
+factor ::= immutable | IDENTIFIER;
+
+immutable ::=     LPAREN expr RPAREN 
+                | literals
+                | call
+                ;
+
+call ::=    IDENTIFIER LPAREN args RPAREN;
+
+args ::=    argList 
+            | ;
+
+argList ::=     argList COMMA expr 
+                | expr;
+
+// Literals
+literals ::=      NUMCONST
+                | CHARS
+                | STRINGS
+                ;
+
+// Types
+typeSpec ::=      INT 
+                | CHAR 
+                | LONG 
+                | SHORT;

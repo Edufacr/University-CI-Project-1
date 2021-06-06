@@ -6,6 +6,8 @@
   <property name="lib"      location="lib"          />
   <property name="tools"    location="tools"        />
 
+  <property name="main"     location="${classes}/Main.class"        />
+
   <taskdef  name="jflex" classname="jflex.anttask.JFlexTask"   classpath="${tools}/jflex-full-1.8.2.jar"   />
   <taskdef  name="cup"   classname="java_cup.anttask.CUPTask"  classpath="${tools}/java-cup-11b.jar"  />
 
@@ -27,5 +29,10 @@
     <delete file="${java}/sym.java" />
     <delete file="${java}/Scanner.java" />
     <delete dir="${classes}" />
+    <mkdir dir="${classes}"  />
+  </target>
+
+  <target name="run">
+    <java classname="${main}"/>
   </target>
 </project>
