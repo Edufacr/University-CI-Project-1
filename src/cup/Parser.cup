@@ -255,14 +255,14 @@ functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                       SEMICOLON                                                
                     ;
 
-switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody {: report_error("Ya temrino"); :}
+switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
                     | SWITCH error 
                       {: report_error("Switch Statement"); :}
                       switchBody                                              
                     ;
 
-switchBody ::=        LCURLY {: report_error("Antes del CaseList"); :} caseList {: report_error("Despues del CaseList"); :} RCURLY {: report_error("Despues del RCURLY"); :}                                               
-                      LCURLY error 
+switchBody ::=        LCURLY caseList RCURLY                 
+                    | LCURLY error 
                       {: report_error("Switch Body"); :}
                       RCURLY                     
                     ;
