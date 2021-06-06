@@ -44,9 +44,6 @@ int funcionBuena(int x, int y) {
    }else { 
       return 5 ;
     } //deberia dar error por doble uso de else
-
-    else{}
-    1+1
         
   if () {  //falta expresion 
      x= a+b; 
