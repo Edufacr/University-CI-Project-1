@@ -246,17 +246,25 @@ continueStmt ::=      CONTINUE SEMICOLON;
  
 functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
                     | READ LPAREN RPAREN SEMICOLON
-                    | READ error SEMICOLON                                                {: report_error("Read instruction"); :}
+                    | READ error 
+                      {: report_error("Read instruction"); :}
+                      SEMICOLON                                                
                     | WRITE LPAREN argList RPAREN SEMICOLON
-                    | WRITE error SEMICOLON                                                {: report_error("Write instruction"); :}
+                    | WRITE error 
+                      {: report_error("Write instruction"); :}
+                      SEMICOLON                                                
                     ;
 
-switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
-                    | SWITCH error switchBody                                              {: report_error("Switch Statement"); :}
+switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody {: report_error("Ya temrino"); :}
+                    | SWITCH error 
+                      {: report_error("Switch Statement"); :}
+                      switchBody                                              
                     ;
 
-switchBody ::=        LCURLY caseList RCURLY                                                
-                      LCURLY error RCURLY                                                 {: report_error("Switch Body"); :}
+switchBody ::=        LCURLY {: report_error("Antes del CaseList"); :} caseList {: report_error("Despues del CaseList"); :} RCURLY {: report_error("Despues del RCURLY"); :}                                               
+                      LCURLY error 
+                      {: report_error("Switch Body"); :}
+                      RCURLY                     
                     ;
 
 caseList ::=          caseList case 
