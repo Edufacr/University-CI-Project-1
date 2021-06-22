@@ -1,9 +1,13 @@
-/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
+import SemanticAnalysis.*;
 
 parser code
 {:
 
+    // Semantic
+    ISemanticAnalyzer sa = new SemanticAnalyzer();
+
+    // Syntaxis
     public void report_error(String sectionName){
         System.out.println("Sección: " + sectionName );
     }
@@ -46,7 +50,7 @@ terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY
 // Mandatory Reserved Words
 terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
 // Mandatory Types
-terminal CHAR, INT, LONG, SHORT;
+terminal String CHAR, INT, LONG, SHORT;
 // Mandatory Functions
 terminal READ, WRITE;
 // Numeric Operators
@@ -80,7 +84,7 @@ non terminal constDecl, varDecl, varDeclList;
 non terminal literals;
 
 // Types
-non terminal typeSpec;
+non terminal String typeSpec;
 
 // Functions
 non terminal funcDecl, paramList, params, funcBody;
@@ -144,13 +148,13 @@ vars    ::=       vars varDecl
                 | constDecl;
 
 // Const & Vars Declaration
-constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
+constDecl ::=     CONST typeSpec:type {: sa.saveType(type); :} IDENTIFIER ASSIGN literals SEMICOLON
                 | CONST error 
                     {: report_error("Declaracion de Constante"); :} 
                   SEMICOLON 
                 ;
 
-varDecl   ::=     typeSpec varDeclList SEMICOLON
+varDecl   ::=     typeSpec:type varDeclList SEMICOLON:semi
                 | typeSpec error
                   {: report_error("Declaracion de Variable"); :}
                   SEMICOLON 
@@ -167,7 +171,7 @@ functions ::=       functions funcDecl
                     funcDecl  
                  ;
 
-funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
+funcDecl ::=      typeSpec:type IDENTIFIER LPAREN params RPAREN funcBody
                 | VOID IDENTIFIER LPAREN params RPAREN  funcBody
                 | error 
                   {: report_error("Declaracion de Funcion"); :} 
@@ -177,8 +181,8 @@ funcDecl ::=      typeSpec IDENTIFIER LPAREN params RPAREN funcBody
 params ::=        paramList 
                 | ; //epsilon
 
-paramList ::=      typeSpec IDENTIFIER COMMA paramList
-                |  typeSpec IDENTIFIER;
+paramList ::=      typeSpec:type IDENTIFIER COMMA paramList
+                |  typeSpec:type IDENTIFIER;
 
 // FuncBody
 funcBody ::=   LCURLY vars stmtList RCURLY 
@@ -358,16 +362,18 @@ args ::=    argList
             | ;
 
 argList ::=     argList COMMA expr 
-                | expr;
+                | expr
+                ;
 
 // Literals
-literals ::=      NUMCONST
-                | CHARS
-                | STRINGS
+literals ::=      NUMCONST:num    {: RESULT = num; :}
+                | CHARS:chars     {: RESULT = chars; :}
+                | STRINGS:strings {: RESULT = strings; :}
                 ;
 
 // Types
-typeSpec ::=      INT 
-                | CHAR 
-                | LONG 
-                | SHORT;
+typeSpec ::=      INT:type    {: RESULT = type; :}
+                | CHAR:type   {: RESULT = type; :}
+                | LONG:type   {: RESULT = type; :}
+                | SHORT:type  {: RESULT = type; :}
+                ;
