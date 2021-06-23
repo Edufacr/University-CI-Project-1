@@ -40,7 +40,8 @@ parser code
 
 /* 
 --------------
-Terminals --------------
+Terminals 
+--------------
 */
 
 // Identifiers
@@ -62,9 +63,9 @@ terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
 terminal AND, OR, EQUALS, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
 
 //Literals
-terminal Integer NUMCONST; 
-terminal String  STRINGS;
-terminal Character CHARS;
+terminal String NUMCONST; 
+terminal String STRINGS;
+terminal String CHARS;
 
 // Extra Reserved Words
 terminal STATIC;
@@ -81,7 +82,7 @@ non terminal program, decls, vars, functions;
 non terminal constDecl, varDecl, varDeclList;
 
 // Literals
-non terminal literals;
+non terminal String literals;
 
 // Types
 non terminal String typeSpec;
@@ -106,7 +107,6 @@ non terminal andExpr, unaryRelExpr, relExpr, relOp;
 
 // SumExpression
 non terminal mulExpr, unaryExpr, factor, immutable;
-
 
 // Operators
 non terminal sumOp, mulOp, unaryOp, doubleUnaryOp;
