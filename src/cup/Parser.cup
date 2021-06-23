@@ -1,10 +1,11 @@
 import java_cup.runtime.*;
 import SemanticAnalysis.*;
 
-parser code
-{:
 
-    // Semantic
+
+
+parser code{:
+
     ISemanticAnalyzer sa = new SemanticAnalyzer();
 
     // Syntaxis
@@ -36,16 +37,17 @@ parser code
             System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
         }
     }
-:}
+:};
 
 /* 
 --------------
 Terminals 
---------------
+
+n---------------
 */
 
 // Identifiers
-terminal IDENTIFIER; 
+terminal String IDENTIFIER; 
 // Special Symbols
 terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
@@ -124,8 +126,14 @@ non terminal switchBody, caseList, case, defaultCase;
 non terminal returnStmt, continueStmt, breakStmt;
 
 
-start with program;
 
+/* 
+--------------
+Precedence
+--------------
+*/
+
+start with program;
 
 /* 
 --------------
@@ -148,20 +156,20 @@ vars    ::=       vars varDecl
                 | constDecl;
 
 // Const & Vars Declaration
-constDecl ::=     CONST typeSpec:type {: sa.saveType(type); :} IDENTIFIER ASSIGN literals SEMICOLON
+constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
                 | CONST error 
                     {: report_error("Declaracion de Constante"); :} 
                   SEMICOLON 
                 ;
 
-varDecl   ::=     typeSpec:type varDeclList SEMICOLON:semi
+varDecl   ::=     typeSpec:type varDeclList SEMICOLON {: sa.insertVar(); :}
                 | typeSpec error
                   {: report_error("Declaracion de Variable"); :}
                   SEMICOLON 
                 ; 
 
-varDeclList ::=   varDeclList COMMA IDENTIFIER
-                | IDENTIFIER
+varDeclList ::=   varDeclList COMMA IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                | IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
                 ;
 
 // Functions
@@ -171,14 +179,14 @@ functions ::=       functions funcDecl
                     funcDecl  
                  ;
 
-funcDecl ::=      typeSpec:type IDENTIFIER LPAREN params RPAREN funcBody
+funcDecl ::=      typeSpec:type IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN params RPAREN funcBody
                 | VOID IDENTIFIER LPAREN params RPAREN  funcBody
                 | error 
                   {: report_error("Declaracion de Funcion"); :} 
                   funcBody                                       
                 ;
 
-params ::=        paramList 
+params ::=        paramList
                 | ; //epsilon
 
 paramList ::=      typeSpec:type IDENTIFIER COMMA paramList
@@ -372,8 +380,8 @@ literals ::=      NUMCONST:num    {: RESULT = num; :}
                 ;
 
 // Types
-typeSpec ::=      INT:type    {: RESULT = type; :}
-                | CHAR:type   {: RESULT = type; :}
-                | LONG:type   {: RESULT = type; :}
-                | SHORT:type  {: RESULT = type; :}
+typeSpec ::=      INT:type    {: sa.saveType(type, typeleft, typeright); :}
+                | CHAR:type   {: sa.saveType(type, typeleft, typeright); :}
+                | LONG:type   {: sa.saveType(type, typeleft, typeright); :}
+                | SHORT:type  {: sa.saveType(type, typeleft, typeright); :}
                 ;

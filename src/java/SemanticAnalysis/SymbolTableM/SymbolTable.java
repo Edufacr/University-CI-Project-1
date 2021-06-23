@@ -6,6 +6,10 @@ public class SymbolTable {
     
     private HashMap<String,Symbol> table;
 
+    public SymbolTable(){
+        table = new HashMap<String,Symbol>();
+    }
+
     public boolean isDefined(String pIdentifier){
         return table.containsKey(pIdentifier);
     }
