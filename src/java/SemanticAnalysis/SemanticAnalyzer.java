@@ -13,6 +13,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     public SemanticAnalyzer(){
         this.stack = new SemanticStack();
         this.table = new SymbolTable();
+        this.codeGen = new CodeGenerator();
     }
 
     private void printError(String pMessage){
@@ -21,7 +22,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         System.out.println();
     }
 
-    @Override
     public void printSymbolTable(){
         table.print();
     }
@@ -50,11 +50,26 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
             IdRegister identifier = (IdRegister) stack.pop();
 
             if(!(table.isDefined(identifier.getId()))){
-                Symbol symbol = new VarSymbol(identifier.getId(), type.getType());
+                VarSymbol symbol = new VarSymbol(identifier.getId(), type.getType());
                 table.insertSymbol(identifier.getId(), symbol);
+                codeGen.generateGlobalVarCode(symbol.getName(), symbol.getType());
+
             } else {
                 printError("Identifier: " + identifier.getId() + " in line: "+ (identifier.getLine() + 1) + ", in column: " + (identifier.getColumn() + 1) + " is already defined.");
             }
         }
+    }
+
+    @Override
+    public void completeVarDecls() {
+        codeGen.commitDataSegment();
+    }
+
+    @Override
+    public void endOfCode() {
+        System.out.println("EndOfCode");
+        codeGen.commitDataSegment();
+        codeGen.commitCodeSegment();   
+        codeGen.generateFile();
     }
 }

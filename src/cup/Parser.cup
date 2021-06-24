@@ -142,7 +142,7 @@ Grammar Rules
 */
 
 // Program Structure
-program  ::=       decls {: sa.printSymbolTable(); :}
+program  ::=       decls {: sa.endOfCode(); :}
                     ;
 
 decls    ::=      vars functions
