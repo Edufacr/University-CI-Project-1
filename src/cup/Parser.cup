@@ -142,12 +142,12 @@ Grammar Rules
 */
 
 // Program Structure
-program  ::=       decls 
+program  ::=       decls {: sa.printSymbolTable(); :}
                     ;
 
 decls    ::=      vars functions
                   | functions
-                  | vars error           {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                  | vars error  {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
                   ;
 
 vars    ::=       vars varDecl

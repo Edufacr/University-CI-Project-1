@@ -1,12 +1,14 @@
 package SemanticAnalysis;
+import CodeGeneration.CodeGenerator;
 import SemanticAnalysis.SemanticStackM.*;
 import SemanticAnalysis.SemanticStackM.Registers.*;
 import SemanticAnalysis.SymbolTableM.*;
 
 public class SemanticAnalyzer implements ISemanticAnalyzer{
 
-    SemanticStack stack;
-    SymbolTable   table;
+    private SemanticStack stack;
+    private SymbolTable   table;
+    private CodeGenerator codeGen;
 
     public SemanticAnalyzer(){
         this.stack = new SemanticStack();
@@ -16,6 +18,12 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     private void printError(String pMessage){
         System.out.println("Semantic Error: ");
         System.out.println(pMessage);
+        System.out.println();
+    }
+
+    @Override
+    public void printSymbolTable(){
+        table.print();
     }
     
     @Override
