@@ -1,5 +1,8 @@
 int a,b,c;
-char a;
-void foo() {
+void foo(int p, char p2) {
+    a = 3;
+}
+
+void foo(int p) {
     a = 3;
 }

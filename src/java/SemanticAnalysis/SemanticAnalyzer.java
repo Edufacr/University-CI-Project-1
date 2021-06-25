@@ -1,4 +1,6 @@
 package SemanticAnalysis;
+import java.util.ArrayList;
+
 import CodeGeneration.CodeGenerator;
 import SemanticAnalysis.SemanticStackM.*;
 import SemanticAnalysis.SemanticStackM.Registers.*;
@@ -58,11 +60,8 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
                 printError("Identifier: " + identifier.getId() + " in line: "+ (identifier.getLine() + 1) + ", in column: " + (identifier.getColumn() + 1) + " is already defined.");
             }
         }
-    }
 
-    @Override
-    public void completeVarDecls() {
-        codeGen.commitDataSegment();
+        stack.pop();
     }
 
     @Override
@@ -71,5 +70,52 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         codeGen.commitDataSegment();
         codeGen.commitCodeSegment();   
         codeGen.generateFile();
+        printSymbolTable();
+    }
+
+    @Override
+    public void completeVarDecls() {
+        codeGen.commitDataSegment();
+    }
+
+    @Override
+    public void saveFooDecl() {
+        IdRegister idRegister = (IdRegister) stack.pop();
+        TypeRegister typeRegister = (TypeRegister) stack.pop();
+
+        FuncRegister funcRegister = new FuncRegister(typeRegister.getType(), idRegister.getId());
+        stack.push(funcRegister);
+        
+        if((table.isDefined(idRegister.getId()))){
+            printError("Function: " + idRegister.getId() + " in line: "+ (idRegister.getLine() + 1) + ", in column: " + (idRegister.getColumn() + 1) + " is already defined."); 
+        }
+        
+           
+
+        String printing = stack.toString();
+        System.out.println(printing);
+
+    }
+
+    @Override
+    public void insertFooDecl() {
+
+        ArrayList<VarSymbol> params = new ArrayList<>();
+
+        while(!(stack.peek() instanceof FuncRegister)){
+            IdRegister idRegister = (IdRegister) stack.pop();
+            TypeRegister typeRegister = (TypeRegister) stack.pop();
+
+            VarSymbol symbol = new VarSymbol(idRegister.getId(), typeRegister.getType());
+            
+            params.add(symbol);
+            
+        }
+
+        FuncRegister funcRegister = (FuncRegister) stack.pop();
+
+        FuncSymbol funcSymbol = new FuncSymbol(funcRegister.getName(), funcRegister.getType(), params);
+        
+        table.insertSymbol(funcRegister.getName(), funcSymbol);
     }
 }

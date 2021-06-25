@@ -4,16 +4,33 @@ import java.util.ArrayList;
 
 public class FuncSymbol extends Symbol {
 
-    private ArrayList<Symbol> parameters;
+    private ArrayList<VarSymbol> parameters;
+    private String type;
 
-    public FuncSymbol(String pName) {
+    public FuncSymbol(String pName,String pType) {
         super(pName);
-        parameters = new ArrayList<Symbol>();
+        type = pType;
+        parameters = new ArrayList<VarSymbol>();
     }
 
-    public boolean addParameter(Symbol pSymbol) {
+    public FuncSymbol(String pName, String pType, ArrayList<VarSymbol> pParams) {
+        super(pName);
+        type = pType;
+        parameters = pParams;
+    }
+
+    public boolean addParameter(VarSymbol pSymbol) {
         return this.parameters.add(pSymbol);
     }
+
+    public String getType(){
+        return this.type;
+    }
+    
+    public ArrayList<VarSymbol> getParameters(){
+        return this.parameters;
+    }
+
 
    @Override
    public String toString() {
