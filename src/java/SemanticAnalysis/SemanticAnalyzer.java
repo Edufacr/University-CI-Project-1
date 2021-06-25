@@ -118,4 +118,18 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         
         table.insertSymbol(funcRegister.getName(), funcSymbol);
     }
+
+    @Override
+    public void checkVar(String pIdentifier, int pLine, int pCol){
+        if(!(table.isDefined(pIdentifier))){
+            printError("Variable: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+        }
+    }
+
+    @Override
+    public void checkFunc(String pIdentifier, int pLine, int pCol) {
+        if(!(table.isDefined(pIdentifier))){
+            printError("Variable: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+        }
+    }
 }

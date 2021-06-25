@@ -251,9 +251,10 @@ returnStmt ::=        RETURN expr SEMICOLON
                       {: report_error("Return statement"); :}
                       SEMICOLON                                               
                     ;
-
+// TODO: Accion que revise que en la pila hay un registro de if o de while
 breakStmt ::=         BREAK SEMICOLON;
 
+// TODO: Accion que revise que en la pila hay un registro de if o de while
 continueStmt ::=      CONTINUE SEMICOLON;
  
 functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
@@ -295,8 +296,9 @@ defaultCase ::=       DEFAULT COLON stmtList
             
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-expr ::=            IDENTIFIER assignOp expr
-                |   IDENTIFIER assignOp error                                           {: report_error("Assign Statement"); :}
+// TODO: Revisar si se debe agregar generacion de codigo a asignaciones
+expr ::=            IDENTIFIER:id  assignOp {: sa.checkVar(id, idleft, idright); :} expr
+                |   IDENTIFIER error        {: report_error("Assign Statement"); :}
                 |   simpleExpr
                 ; 
 
@@ -364,11 +366,14 @@ immutable ::=     LPAREN expr RPAREN
                 | call
                 ;
 
+// TODO: Check that Foo is defined
+// TODO: Check param List is correct 
 call ::=    IDENTIFIER LPAREN args RPAREN;
 
 args ::=    argList 
             | ;
 
+// TODO: Accion semantica para que lo vaya metiendo a una lista
 argList ::=     argList COMMA expr 
                 | expr
                 ;

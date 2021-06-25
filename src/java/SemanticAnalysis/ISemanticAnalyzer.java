@@ -15,4 +15,8 @@ public interface ISemanticAnalyzer {
     void insertVar();
 
     void insertFooDecl();
+
+    void checkVar(String pIdentifier, int pLine, int pCol);
+
+    void checkFunc(String pIdentifier, int pLine, int pCol);
 }
