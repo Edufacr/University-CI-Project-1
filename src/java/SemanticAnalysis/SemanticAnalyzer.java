@@ -154,7 +154,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
         // if(funcDeclSymbol instanceof ErrorSymbol){
 
-        }
+       // }
         
 
 
