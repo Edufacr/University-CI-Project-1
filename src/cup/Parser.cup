@@ -343,8 +343,8 @@ mulOp ::=     MULT
 
 unaryExpr ::= unaryOp factor
             | factor
-            | doubleUnaryOp IDENTIFIER
-            | IDENTIFIER doubleUnaryOp
+            | doubleUnaryOp IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
+            | IDENTIFIER:id doubleUnaryOp {: sa.checkVar(id, idleft, idright); :}
             ;
 unaryOp ::=   MINUS
             | PLUS
@@ -354,7 +354,9 @@ doubleUnaryOp ::=     PLUS_PLUS
                     | MINUS_MINUS
                     ;
 
-factor ::= immutable | IDENTIFIER;
+factor ::=    immutable 
+            | IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
+            ;
 
 immutable ::=     LPAREN expr RPAREN 
                 | literals
