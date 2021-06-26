@@ -103,7 +103,9 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
             TypeRegister typeRegister = (TypeRegister) stack.pop();
 
             VarSymbol symbol = new VarSymbol(idRegister.getId(), typeRegister.getType());
-            
+
+            // TODO: Preguntarle a la profe si los parametros son globales
+            table.insertSymbol(idRegister.getId(), symbol);
             params.add(symbol);
             
         }
@@ -130,6 +132,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         }
     }
 
+    // TODO: Probar con el DO
     @Override
     public void checkFunc(String pIdentifier, int pLine, int pCol) {
 
