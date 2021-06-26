@@ -9,4 +9,9 @@ public abstract class DataObject extends SemanticRegister {
 	public String getType() {
 		return this.type;
 	}
+
+	@Override
+	public String toString() {
+		return "Data Object [ type: " + this.type + " ]";
+	}
 }

@@ -28,6 +28,10 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     public void printSymbolTable(){
         table.print();
     }
+
+    public void printSemanticStack(){
+        System.out.println(stack.toString());
+    }
     
     @Override
     public void saveType(String pType, int pLine, int pCol) {
@@ -40,9 +44,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
         SemanticRegister register = new IdRegister(pIdentifier,pLine,pCol);
         stack.push(register);
-        
-        String printing = stack.toString();
-        System.out.println(printing);
     }
 
     @Override
@@ -90,10 +91,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         if((table.isDefined(idRegister.getId()))){
             printError("Function: " + idRegister.getId() + " in line: "+ (idRegister.getLine() + 1) + ", in column: " + (idRegister.getColumn() + 1) + " is already defined."); 
         }
-
-        String printing = stack.toString();
-        System.out.println(printing);
-
     }
 
     @Override

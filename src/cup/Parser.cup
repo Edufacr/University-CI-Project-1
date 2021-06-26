@@ -363,8 +363,6 @@ immutable ::=     LPAREN expr RPAREN
                 | call
                 ;
 
-// TODO: Check that Foo is defined
-// TODO: Check param List is correct 
 call ::=    IDENTIFIER:id LPAREN {: sa.saveFuncCall(id, idleft, idright); :} args RPAREN  {: sa.checkFunc(id, idleft, idright); :};
 
 args ::=    argList 

@@ -17,13 +17,12 @@ class Main {
             Scanner scanner = new Scanner(file);
             Parser p = new Parser(scanner);
 
-                if(debugger != ""){
+                if(debugger != "") {
                     System.out.println("-----------------------------");
                     System.out.println("Initializing Debug Session: ");
                     System.out.println("-----------------------------");
                     p.debug_parse();
-                }
-                else{
+                } else {
                     System.out.println("-------------");
                     System.out.println("Inicia Parseo");
                     System.out.println("-------------");
