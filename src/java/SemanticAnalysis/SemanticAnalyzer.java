@@ -165,7 +165,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
                 for (int i = 0; i < params.size(); i++) {
                     if (params.get(i).getType() != inParams.get(i).getType()) {
                         String errorMessage = "Mismatch parameter type in function: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1)+
-                        "Parameter: " + params.get(i).getName() + " is of type: " + params.get(i).getType() + "but got type: " + inParams.get(i).getType();
+                        " Parameter: " + params.get(i).getName() + " is of type: " + params.get(i).getType() + " but got type: " + inParams.get(i).getType();
                         printError(errorMessage); 
                     }
                 }
@@ -176,23 +176,40 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
     @Override
     public void addConstInt(int constVal) {
-        DO_ConstInt intDO = new DO_ConstInt(constVal, "INT");
+        DO_ConstInt intDO = new DO_ConstInt(constVal, "int");
         stack.push(intDO);
     }
 
     @Override
     public void addConstCharString(String charStringConst) {
-        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "STRING");
+        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "String");
         stack.push(charStringDO);
     }
 
+    // TODO: Preguntar a la profe si en la tabla de simbolos los simbolos de funccion tienen que ser diferentes a los de var
+    // De esta manera se evitaría que se llame a una funcion como una varaibles
     @Override
     public void addExpressionVar(String var, int pLine, int pCol) {
-        DO_ExpressionVar expressionVarDO = new DO_ExpressionVar(var, "VAR");
         checkVar(var, pLine, pCol);
-        stack.push(expressionVarDO);
+        Symbol symbol = table.getSymbol(var);;
+        if(!(symbol instanceof ErrorSymbol)){
+            
+            DO_ExpressionVar expressionVarDO = new DO_ExpressionVar(var, (((VarSymbol) symbol).getType()));
+            checkVar(var, pLine, pCol);
+            stack.push(expressionVarDO);
+            
+        } else {
+            //Error
+        }
+        
+        assert symbol!=null;
+        
+
     }
 
+
+    // TODO: Este es un Registro Semantico de operador no un DO
+    // Por eso no tiene tipo como los demas DO
     @Override
     public void addOperator(String operator) {
         DO_Operator operatorDO = new DO_Operator(operator, "OPERATOR");
@@ -202,6 +219,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     @Override
     public void evalBinary(int pLine, int pCol) {
         DataObject do1 = (DataObject) stack.pop();
+        // TODO: Cambiar a operador
         DataObject op = (DataObject) stack.pop();
         DataObject do2 = (DataObject) stack.pop();
 
