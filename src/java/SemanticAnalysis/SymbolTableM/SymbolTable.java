@@ -1,6 +1,8 @@
 package SemanticAnalysis.SymbolTableM;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class SymbolTable {
     
@@ -23,6 +25,19 @@ public class SymbolTable {
         table.put(pIdentifier, pSymbol);
         return true;
     }
+
+    public void print(){
+
+        Set<Map.Entry<String,Symbol>> entries = this.table.entrySet();
+        
+        System.out.println("Symbol Table: ");
+        System.out.println("**************");
+        for(Map.Entry<String,Symbol> entry : entries ) {
+            System.out.println( "Symbol: " + entry.getKey() + "\t[ " + entry.getValue().toString() + " ]" );
+        }
+        System.out.println("**************");
+    }
+
 }
 
 

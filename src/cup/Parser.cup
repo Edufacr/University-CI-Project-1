@@ -51,9 +51,9 @@ terminal String IDENTIFIER;
 // Special Symbols
 terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
-terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
+terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
 // Mandatory Types
-terminal String CHAR, INT, LONG, SHORT;
+terminal String CHAR, INT, LONG, SHORT, VOID;
 // Mandatory Functions
 terminal READ, WRITE;
 // Numeric Operators
@@ -142,18 +142,19 @@ Grammar Rules
 */
 
 // Program Structure
-program  ::=       decls 
-                    ;
+program   ::=     decls {: sa.endOfCode(); :}
+                ;
 
-decls    ::=      vars functions
-                  | functions
-                  | vars error           {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
-                  ;
+decls     ::=     vars functions
+                | functions
+                | vars error  {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                ;
 
-vars    ::=       vars varDecl
+vars      ::=     vars varDecl
                 | vars constDecl
                 | varDecl
-                | constDecl;
+                | constDecl
+                ;
 
 // Const & Vars Declaration
 constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
@@ -173,33 +174,32 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER:id {: sa.saveIdentifier(id, idlef
                 ;
 
 // Functions
-functions ::=       functions funcDecl
-                 |  funcDecl
-                 |  error {: report_error("Funciones del Programa"); :} 
-                    funcDecl  
-                 ;
+functions ::=     functions funcDecl
+                | funcDecl
+                | error {: report_error("Funciones del Programa"); :} funcDecl  
+                ;
 
-funcDecl ::=      typeSpec:type IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN params RPAREN funcBody
-                | VOID IDENTIFIER LPAREN params RPAREN  funcBody
-                | error 
-                  {: report_error("Declaracion de Funcion"); :} 
-                  funcBody                                       
+funcDecl ::=      typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :} funcBody
+                | VOID:type {: sa.saveType(type, typeleft, typeright); :} IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :}  funcBody
+                | error {: report_error("Declaracion de Funcion"); :} funcBody                                       
                 ;
 
 params ::=        paramList
-                | ; //epsilon
+                | 
+                ; //epsilon
 
-paramList ::=      typeSpec:type IDENTIFIER COMMA paramList
-                |  typeSpec:type IDENTIFIER;
+paramList ::=     typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} COMMA paramList
+                | typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                ;
 
 // FuncBody
-funcBody ::=   LCURLY vars stmtList RCURLY 
-                    | LCURLY vars RCURLY 
-                    | LCURLY stmtList RCURLY
-                    | LCURLY RCURLY
-                    | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
-                    | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
-                    ;
+funcBody ::=      LCURLY vars stmtList RCURLY 
+                | LCURLY vars RCURLY 
+                | LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
+                | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
+                ;
 
 // CodeBlock
 codeBlock ::=         LCURLY stmtList RCURLY
@@ -251,9 +251,10 @@ returnStmt ::=        RETURN expr SEMICOLON
                       {: report_error("Return statement"); :}
                       SEMICOLON                                               
                     ;
-
+// TODO: Accion que revise que en la pila hay un registro de if o de while
 breakStmt ::=         BREAK SEMICOLON;
 
+// TODO: Accion que revise que en la pila hay un registro de if o de while
 continueStmt ::=      CONTINUE SEMICOLON;
  
 functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
@@ -295,8 +296,9 @@ defaultCase ::=       DEFAULT COLON stmtList
             
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-expr ::=            IDENTIFIER assignOp expr
-                |   IDENTIFIER assignOp error                                           {: report_error("Assign Statement"); :}
+// TODO: Revisar si se debe agregar generacion de codigo a asignaciones
+expr ::=            IDENTIFIER:id  assignOp {: sa.checkVar(id, idleft, idright); :} expr
+                |   IDENTIFIER error        {: report_error("Assign Statement"); :}
                 |   simpleExpr
                 ; 
 
@@ -364,11 +366,14 @@ immutable ::=     LPAREN expr RPAREN
                 | call
                 ;
 
+// TODO: Check that Foo is defined
+// TODO: Check param List is correct 
 call ::=    IDENTIFIER LPAREN args RPAREN;
 
 args ::=    argList 
             | ;
 
+// TODO: Accion semantica para que lo vaya metiendo a una lista
 argList ::=     argList COMMA expr 
                 | expr
                 ;

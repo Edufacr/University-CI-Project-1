@@ -7,11 +7,11 @@
 public interface sym {
   /* terminals */
   public static final int STRINGS = 54;
-  public static final int SHORT = 29;
+  public static final int SHORT = 28;
   public static final int CHARS = 55;
   public static final int MULT = 36;
   public static final int CONST = 13;
-  public static final int CHAR = 26;
+  public static final int CHAR = 25;
   public static final int EQUALS = 46;
   public static final int PLUS_ASSIGN = 39;
   public static final int NUMCONST = 53;
@@ -20,7 +20,7 @@ public interface sym {
   public static final int GREATER = 51;
   public static final int LPAREN = 9;
   public static final int CONTINUE = 16;
-  public static final int INT = 27;
+  public static final int INT = 26;
   public static final int LESS = 52;
   public static final int MINUS = 35;
   public static final int FOR = 20;
@@ -45,7 +45,7 @@ public interface sym {
   public static final int LCURLY = 11;
   public static final int MOD = 38;
   public static final int BREAK = 14;
-  public static final int VOID = 24;
+  public static final int VOID = 29;
   public static final int MOD_ASSIGN = 43;
   public static final int DIV_ASSIGN = 42;
   public static final int SWITCH = 23;
@@ -56,9 +56,9 @@ public interface sym {
   public static final int LESS_EQUALS = 49;
   public static final int READ = 30;
   public static final int RBRACK = 7;
-  public static final int WHILE = 25;
+  public static final int WHILE = 24;
   public static final int DEFAULT = 17;
-  public static final int LONG = 28;
+  public static final int LONG = 27;
   public static final int MULT_ASSIGN = 41;
   public static final int MINUS_ASSIGN = 40;
   public static final int DO = 18;
@@ -88,12 +88,12 @@ public interface sym {
   "IF",
   "RETURN",
   "SWITCH",
-  "VOID",
   "WHILE",
   "CHAR",
   "INT",
   "LONG",
   "SHORT",
+  "VOID",
   "READ",
   "WRITE",
   "PLUS_PLUS",

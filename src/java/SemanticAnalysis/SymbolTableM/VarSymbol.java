@@ -11,4 +11,9 @@ public class VarSymbol extends Symbol{
     public String getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "var: " + getName() + ", type: " + getType();
+    }
 }
