@@ -10,13 +10,16 @@ public interface ISemanticAnalyzer {
 
     void saveIdentifier(String pIdentifier, int pLine, int pCol);
 
-    void saveFooDecl();
+    void saveFuncCall(String pIdentifier, int pLine, int pCol);
+
+    void saveFuncDecl();
     
     void insertVar();
 
-    void insertFooDecl();
+    void insertFuncDecl();
 
     void checkVar(String pIdentifier, int pLine, int pCol);
 
     void checkFunc(String pIdentifier, int pLine, int pCol);
+
 }

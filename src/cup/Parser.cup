@@ -179,8 +179,8 @@ functions ::=     functions funcDecl
                 | error {: report_error("Funciones del Programa"); :} funcDecl  
                 ;
 
-funcDecl ::=      typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :} funcBody
-                | VOID:type {: sa.saveType(type, typeleft, typeright); :} IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :}  funcBody
+funcDecl ::=      typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFuncDecl(); :} params RPAREN {: sa.insertFuncDecl(); :} funcBody
+                | VOID:type {: sa.saveType(type, typeleft, typeright); :} IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFuncDecl(); :} params RPAREN {: sa.insertFuncDecl(); :}  funcBody
                 | error {: report_error("Declaracion de Funcion"); :} funcBody                                       
                 ;
 
@@ -365,7 +365,7 @@ immutable ::=     LPAREN expr RPAREN
 
 // TODO: Check that Foo is defined
 // TODO: Check param List is correct 
-call ::=    IDENTIFIER LPAREN args RPAREN;
+call ::=    IDENTIFIER:id LPAREN {: sa.saveFuncCall(id, idleft, idright); :} args RPAREN  {: sa.checkFunc(id, idleft, idright); :};
 
 args ::=    argList 
             | ;

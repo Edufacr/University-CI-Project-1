@@ -5,6 +5,7 @@ import CodeGeneration.CodeGenerator;
 import SemanticAnalysis.SemanticStackM.*;
 import SemanticAnalysis.SymbolTableM.*;
 import SemanticAnalysis.SemanticStackM.Registers.*;
+import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.DataObject;
 
 public class SemanticAnalyzer implements ISemanticAnalyzer{
 
@@ -79,7 +80,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     }
 
     @Override
-    public void saveFooDecl() {
+    public void saveFuncDecl() {
         IdRegister idRegister = (IdRegister) stack.pop();
         TypeRegister typeRegister = (TypeRegister) stack.pop();
 
@@ -89,8 +90,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         if((table.isDefined(idRegister.getId()))){
             printError("Function: " + idRegister.getId() + " in line: "+ (idRegister.getLine() + 1) + ", in column: " + (idRegister.getColumn() + 1) + " is already defined."); 
         }
-        
-
 
         String printing = stack.toString();
         System.out.println(printing);
@@ -98,7 +97,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     }
 
     @Override
-    public void insertFooDecl() {
+    public void insertFuncDecl() {
 
         ArrayList<VarSymbol> params = new ArrayList<>();
 
@@ -120,6 +119,12 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     }
 
     @Override
+    public void saveFuncCall(String pIdentifier, int pLine, int pCol) {
+        SemanticRegister register = new FuncCallRegister(pIdentifier, pLine, pCol);
+        stack.push(register);
+    }
+
+    @Override
     public void checkVar(String pIdentifier, int pLine, int pCol){
         if(!(table.isDefined(pIdentifier))){
             printError("Variable: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
@@ -130,8 +135,30 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
     @Override
     public void checkFunc(String pIdentifier, int pLine, int pCol) {
+
         if(!(table.isDefined(pIdentifier))){
-            printError("Variable: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+            printError("Function: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+            Symbol symbol = new ErrorSymbol(pIdentifier);
+            table.insertSymbol(pIdentifier, symbol);
         }
+
+        Symbol funcDeclSymbol = table.getSymbol(pIdentifier);
+
+
+        ArrayList<DataObject> params = new ArrayList<>();
+
+        // while(!(stack.peek() instanceof FuncCallRegister)){
+        //     DataObject do_rs = (DataObject) stack.pop();
+        //     params.add(do_rs);
+        // }
+
+        // if(funcDeclSymbol instanceof ErrorSymbol){
+
+        }
+        
+
+
     }
+
+
 }

@@ -38,6 +38,9 @@ public class SymbolTable {
         System.out.println("**************");
     }
 
+    public Symbol getSymbol(String pIdentifier) {
+        return table.get(pIdentifier);
+    }
 }
 
 
