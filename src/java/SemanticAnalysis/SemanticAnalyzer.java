@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 import CodeGeneration.CodeGenerator;
 import SemanticAnalysis.SemanticStackM.*;
-import SemanticAnalysis.SemanticStackM.Registers.*;
 import SemanticAnalysis.SymbolTableM.*;
+import SemanticAnalysis.SemanticStackM.Registers.*;
 
 public class SemanticAnalyzer implements ISemanticAnalyzer{
 
@@ -90,7 +90,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
             printError("Function: " + idRegister.getId() + " in line: "+ (idRegister.getLine() + 1) + ", in column: " + (idRegister.getColumn() + 1) + " is already defined."); 
         }
         
-           
+
 
         String printing = stack.toString();
         System.out.println(printing);
@@ -123,6 +123,8 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     public void checkVar(String pIdentifier, int pLine, int pCol){
         if(!(table.isDefined(pIdentifier))){
             printError("Variable: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+            Symbol symbol = new ErrorSymbol(pIdentifier);
+            table.insertSymbol(pIdentifier, symbol);
         }
     }
 

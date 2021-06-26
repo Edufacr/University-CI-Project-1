@@ -202,17 +202,17 @@ funcBody ::=      LCURLY vars stmtList RCURLY
                 ;
 
 // CodeBlock
-codeBlock ::=         LCURLY stmtList RCURLY
-                    | LCURLY RCURLY
-                    | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
-                    ;
+codeBlock ::=     LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
+                ;
 
 // Statements
-stmtList ::=    stmtList stmt
+stmtList ::=      stmtList stmt
                 | stmt
                 ;
 
-stmt ::=        exprStmt
+stmt ::=          exprStmt
                 | ifStmt
                 | iterStmt
                 | returnStmt 
@@ -222,51 +222,46 @@ stmt ::=        exprStmt
                 | switchStmt
                 ;
 
-exprStmt ::=    expr SEMICOLON
+exprStmt ::=      expr SEMICOLON
                 | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
                 ; 
      
 // Flow Control 
-ifStmt ::=            IF LPAREN expr RPAREN codeBlock elseStmt
-                    | IF error
-                      {: report_error("If statement"); :}
-                      codeBlock elseStmt                                                 
-                    ;
-elseStmt ::=          ELSE codeBlock
-                    | ; // epsilon
+ifStmt ::=        IF LPAREN expr RPAREN codeBlock elseStmt
+                | IF error {: report_error("If statement"); :} codeBlock elseStmt                                                 
+                ;
 
-iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
-                    | WHILE error 
-                      {: report_error("While statement"); :}
-                      codeBlock
-                    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
-                    | FOR error 
-                      {: report_error("For statement"); :}
-                      codeBlock                                                  
-                    ;
+elseStmt ::=      ELSE codeBlock
+                | 
+                ; // epsilon
 
-returnStmt ::=        RETURN expr SEMICOLON
-                    | RETURN SEMICOLON
-                    | RETURN error 
-                      {: report_error("Return statement"); :}
-                      SEMICOLON                                               
-                    ;
-// TODO: Accion que revise que en la pila hay un registro de if o de while
-breakStmt ::=         BREAK SEMICOLON;
+iterStmt ::=      WHILE LPAREN expr RPAREN codeBlock
+                | WHILE error {: report_error("While statement"); :} codeBlock
+                | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                | FOR error {: report_error("For statement"); :} codeBlock                                                  
+                ;
+
+returnStmt ::=    RETURN expr SEMICOLON
+                | RETURN SEMICOLON
+                | RETURN error {: report_error("Return statement"); :} SEMICOLON                                               
+                ;
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
-continueStmt ::=      CONTINUE SEMICOLON;
+breakStmt ::=     BREAK SEMICOLON;
+
+// TODO: Accion que revise que en la pila hay un registro de if o de while
+continueStmt ::=  CONTINUE SEMICOLON;
  
-functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
-                    | READ LPAREN RPAREN SEMICOLON
-                    | READ error 
-                      {: report_error("Read instruction"); :}
-                      SEMICOLON                                                
-                    | WRITE LPAREN argList RPAREN SEMICOLON
-                    | WRITE error 
-                      {: report_error("Write instruction"); :}
-                      SEMICOLON                                                
-                    ;
+functionsStmt ::= READ LPAREN IDENTIFIER RPAREN SEMICOLON
+                  | READ LPAREN RPAREN SEMICOLON
+                  | READ error 
+                    {: report_error("Read instruction"); :}
+                    SEMICOLON                                                
+                  | WRITE LPAREN argList RPAREN SEMICOLON
+                  | WRITE error 
+                    {: report_error("Write instruction"); :}
+                    SEMICOLON                                                
+                  ;
 
 switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
                     | SWITCH error 
