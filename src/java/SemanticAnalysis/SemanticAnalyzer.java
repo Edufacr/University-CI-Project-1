@@ -137,28 +137,40 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     public void checkFunc(String pIdentifier, int pLine, int pCol) {
 
         if(!(table.isDefined(pIdentifier))){
-            printError("Function: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
+            printError("Function:  " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " is undefined."); 
             Symbol symbol = new ErrorSymbol(pIdentifier);
             table.insertSymbol(pIdentifier, symbol);
         }
 
-        Symbol funcDeclSymbol = table.getSymbol(pIdentifier);
+        Symbol symbol = table.getSymbol(pIdentifier);
 
 
-        ArrayList<DataObject> params = new ArrayList<>();
+        ArrayList<DataObject> inParams = new ArrayList<>();
 
-        // while(!(stack.peek() instanceof FuncCallRegister)){
-        //     DataObject do_rs = (DataObject) stack.pop();
-        //     params.add(do_rs);
-        // }
+        while(!(stack.peek() instanceof FuncCallRegister)){
+            DataObject do_rs = (DataObject) stack.pop();
+            inParams.add(0, do_rs);
+        }
 
-        // if(funcDeclSymbol instanceof ErrorSymbol){
+        stack.pop();
 
-       // }
-        
+        if(!(symbol instanceof ErrorSymbol)) {
+            FuncSymbol funcSymbol =  (FuncSymbol) symbol;
+            ArrayList<VarSymbol> params = funcSymbol.getParameters();
 
+            if(params.size() != inParams.size()) {
+                printError("Mismatch number of parameters in function: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + " expected: " + params.size() + " got: " + inParams.size()); 
+            } else {
+                for (int i = 0; i < params.size(); i++) {
+                    if (params.get(i).getType() != inParams.get(i).getType()) {
+                        String errorMessage = "Mismatch parameter type in function: " + pIdentifier + " in line: "+ (pLine + 1) + ", in column: " + (pCol + 1)+
+                        "Parameter: " + params.get(i).getName() + " is of type: " + params.get(i).getType() + "but got type: " + inParams.get(i).getType();
+                        printError(errorMessage); 
+                    }
+                }
+            }
 
+        }
     }
-
 
 }
