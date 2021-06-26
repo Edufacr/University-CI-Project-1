@@ -51,9 +51,9 @@ terminal String IDENTIFIER;
 // Special Symbols
 terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
-terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, VOID, WHILE;
+terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
 // Mandatory Types
-terminal String CHAR, INT, LONG, SHORT;
+terminal String CHAR, INT, LONG, SHORT, VOID;
 // Mandatory Functions
 terminal READ, WRITE;
 // Numeric Operators
@@ -142,18 +142,19 @@ Grammar Rules
 */
 
 // Program Structure
-program  ::=       decls 
-                    ;
+program   ::=     decls {: sa.endOfCode(); :}
+                ;
 
-decls    ::=      vars functions
-                  | functions
-                  | vars error           {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
-                  ;
+decls     ::=     vars functions
+                | functions
+                | vars error  {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                ;
 
-vars    ::=       vars varDecl
+vars      ::=     vars varDecl
                 | vars constDecl
                 | varDecl
-                | constDecl;
+                | constDecl
+                ;
 
 // Const & Vars Declaration
 constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
@@ -173,46 +174,45 @@ varDeclList ::=   varDeclList COMMA IDENTIFIER:id {: sa.saveIdentifier(id, idlef
                 ;
 
 // Functions
-functions ::=       functions funcDecl
-                 |  funcDecl
-                 |  error {: report_error("Funciones del Programa"); :} 
-                    funcDecl  
-                 ;
+functions ::=     functions funcDecl
+                | funcDecl
+                | error {: report_error("Funciones del Programa"); :} funcDecl  
+                ;
 
-funcDecl ::=      typeSpec:type IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN params RPAREN funcBody
-                | VOID IDENTIFIER LPAREN params RPAREN  funcBody
-                | error 
-                  {: report_error("Declaracion de Funcion"); :} 
-                  funcBody                                       
+funcDecl ::=      typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :} funcBody
+                | VOID:type {: sa.saveType(type, typeleft, typeright); :} IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFooDecl(); :} params RPAREN {: sa.insertFooDecl(); :}  funcBody
+                | error {: report_error("Declaracion de Funcion"); :} funcBody                                       
                 ;
 
 params ::=        paramList
-                | ; //epsilon
+                | 
+                ; //epsilon
 
-paramList ::=      typeSpec:type IDENTIFIER COMMA paramList
-                |  typeSpec:type IDENTIFIER;
+paramList ::=     typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} COMMA paramList
+                | typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                ;
 
 // FuncBody
-funcBody ::=   LCURLY vars stmtList RCURLY 
-                    | LCURLY vars RCURLY 
-                    | LCURLY stmtList RCURLY
-                    | LCURLY RCURLY
-                    | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
-                    | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
-                    ;
+funcBody ::=      LCURLY vars stmtList RCURLY 
+                | LCURLY vars RCURLY 
+                | LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
+                | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
+                ;
 
 // CodeBlock
-codeBlock ::=         LCURLY stmtList RCURLY
-                    | LCURLY RCURLY
-                    | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
-                    ;
+codeBlock ::=     LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
+                ;
 
 // Statements
-stmtList ::=    stmtList stmt
+stmtList ::=      stmtList stmt
                 | stmt
                 ;
 
-stmt ::=        exprStmt
+stmt ::=          exprStmt
                 | ifStmt
                 | iterStmt
                 | returnStmt 
@@ -222,50 +222,46 @@ stmt ::=        exprStmt
                 | switchStmt
                 ;
 
-exprStmt ::=    expr SEMICOLON
+exprStmt ::=      expr SEMICOLON
                 | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
                 ; 
      
 // Flow Control 
-ifStmt ::=            IF LPAREN expr RPAREN codeBlock elseStmt
-                    | IF error
-                      {: report_error("If statement"); :}
-                      codeBlock elseStmt                                                 
-                    ;
-elseStmt ::=          ELSE codeBlock
-                    | ; // epsilon
+ifStmt ::=        IF LPAREN expr RPAREN codeBlock elseStmt
+                | IF error {: report_error("If statement"); :} codeBlock elseStmt                                                 
+                ;
 
-iterStmt ::=          WHILE LPAREN expr RPAREN codeBlock
-                    | WHILE error 
-                      {: report_error("While statement"); :}
-                      codeBlock
-                    | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
-                    | FOR error 
-                      {: report_error("For statement"); :}
-                      codeBlock                                                  
-                    ;
+elseStmt ::=      ELSE codeBlock
+                | 
+                ; // epsilon
 
-returnStmt ::=        RETURN expr SEMICOLON
-                    | RETURN SEMICOLON
-                    | RETURN error 
-                      {: report_error("Return statement"); :}
-                      SEMICOLON                                               
-                    ;
+iterStmt ::=      WHILE LPAREN expr RPAREN codeBlock
+                | WHILE error {: report_error("While statement"); :} codeBlock
+                | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                | FOR error {: report_error("For statement"); :} codeBlock                                                  
+                ;
 
-breakStmt ::=         BREAK SEMICOLON;
+returnStmt ::=    RETURN expr SEMICOLON
+                | RETURN SEMICOLON
+                | RETURN error {: report_error("Return statement"); :} SEMICOLON                                               
+                ;
 
-continueStmt ::=      CONTINUE SEMICOLON;
+// TODO: Accion que revise que en la pila hay un registro de if o de while
+breakStmt ::=     BREAK SEMICOLON;
+
+// TODO: Accion que revise que en la pila hay un registro de if o de while
+continueStmt ::=  CONTINUE SEMICOLON;
  
-functionsStmt ::=     READ LPAREN IDENTIFIER RPAREN SEMICOLON
-                    | READ LPAREN RPAREN SEMICOLON
-                    | READ error 
-                      {: report_error("Read instruction"); :}
-                      SEMICOLON                                                
-                    | WRITE LPAREN argList RPAREN SEMICOLON
-                    | WRITE error 
-                      {: report_error("Write instruction"); :}
-                      SEMICOLON                                                
-                    ;
+functionsStmt ::= READ LPAREN IDENTIFIER RPAREN SEMICOLON
+                  | READ LPAREN RPAREN SEMICOLON
+                  | READ error 
+                    {: report_error("Read instruction"); :}
+                    SEMICOLON                                                
+                  | WRITE LPAREN argList RPAREN SEMICOLON
+                  | WRITE error 
+                    {: report_error("Write instruction"); :}
+                    SEMICOLON                                                
+                  ;
 
 switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
                     | SWITCH error 
@@ -295,8 +291,9 @@ defaultCase ::=       DEFAULT COLON stmtList
             
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
-expr ::=            IDENTIFIER assignOp expr
-                |   IDENTIFIER assignOp error                                           {: report_error("Assign Statement"); :}
+// TODO: Revisar si se debe agregar generacion de codigo a asignaciones
+expr ::=            IDENTIFIER:id  assignOp {: sa.checkVar(id, idleft, idright); :} expr
+                |   IDENTIFIER error        {: report_error("Assign Statement"); :}
                 |   simpleExpr
                 ; 
 
@@ -346,8 +343,8 @@ mulOp ::=     MULT
 
 unaryExpr ::= unaryOp factor
             | factor
-            | doubleUnaryOp IDENTIFIER
-            | IDENTIFIER doubleUnaryOp
+            | doubleUnaryOp IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
+            | IDENTIFIER:id doubleUnaryOp {: sa.checkVar(id, idleft, idright); :}
             ;
 unaryOp ::=   MINUS
             | PLUS
@@ -357,18 +354,23 @@ doubleUnaryOp ::=     PLUS_PLUS
                     | MINUS_MINUS
                     ;
 
-factor ::= immutable | IDENTIFIER;
+factor ::=    immutable 
+            | IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
+            ;
 
 immutable ::=     LPAREN expr RPAREN 
                 | literals
                 | call
                 ;
 
+// TODO: Check that Foo is defined
+// TODO: Check param List is correct 
 call ::=    IDENTIFIER LPAREN args RPAREN;
 
 args ::=    argList 
             | ;
 
+// TODO: Accion semantica para que lo vaya metiendo a una lista
 argList ::=     argList COMMA expr 
                 | expr
                 ;
