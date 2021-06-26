@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 import CodeGeneration.CodeGenerator;
 import SemanticAnalysis.SemanticStackM.*;
+import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.*;
 import SemanticAnalysis.SymbolTableM.*;
 import SemanticAnalysis.SemanticStackM.Registers.*;
 import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.DataObject;
@@ -173,4 +174,39 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         }
     }
 
+    @Override
+    public void addConstInt(int constVal) {
+        DO_ConstInt intDO = new DO_ConstInt(constVal, "INT");
+        stack.push(intDO);
+    }
+
+    @Override
+    public void addConstCharString(String charStringConst) {
+        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "STRING");
+        stack.push(charStringDO);
+    }
+
+    @Override
+    public void addExpressionVar(String var, int pLine, int pCol) {
+        DO_ExpressionVar expressionVarDO = new DO_ExpressionVar(var, "VAR");
+        checkVar(var, pLine, pCol);
+        stack.push(expressionVarDO);
+    }
+
+    @Override
+    public void addOperator(String operator) {
+        DO_Operator operatorDO = new DO_Operator(operator, "OPERATOR");
+        stack.push(operatorDO);
+    }
+
+    @Override
+    public void evalBinary(int pLine, int pCol) {
+        DataObject do1 = (DataObject) stack.pop();
+        DataObject op = (DataObject) stack.pop();
+        DataObject do2 = (DataObject) stack.pop();
+
+        if(!do1.getType().equals(do2.getType())){
+            printError("Types do not match: " + do1.getToken() + " and "+ do2.getToken()+" in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + ".");
+        }
+    }
 }

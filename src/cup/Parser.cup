@@ -292,7 +292,7 @@ defaultCase ::=       DEFAULT COLON stmtList
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 // TODO: Revisar si se debe agregar generacion de codigo a asignaciones
-expr ::=            IDENTIFIER:id  assignOp {: sa.checkVar(id, idleft, idright); :} expr
+expr ::=            IDENTIFIER:id  assignOp {: sa.addExpressionVar(id, idleft, idright); :} expr
                 |   IDENTIFIER error        {: report_error("Assign Statement"); :}
                 |   simpleExpr
                 ; 
@@ -343,8 +343,8 @@ mulOp ::=     MULT
 
 unaryExpr ::= unaryOp factor
             | factor
-            | doubleUnaryOp IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
-            | IDENTIFIER:id doubleUnaryOp {: sa.checkVar(id, idleft, idright); :}
+            | doubleUnaryOp IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
+            | IDENTIFIER:id doubleUnaryOp {: sa.addExpressionVar(id, idleft, idright); :}
             ;
 unaryOp ::=   MINUS
             | PLUS
@@ -355,7 +355,7 @@ doubleUnaryOp ::=     PLUS_PLUS
                     ;
 
 factor ::=    immutable 
-            | IDENTIFIER:id {: sa.checkVar(id, idleft, idright); :}
+            | IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
             ;
 
 immutable ::=     LPAREN expr RPAREN 
