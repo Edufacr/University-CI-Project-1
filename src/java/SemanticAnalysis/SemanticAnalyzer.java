@@ -180,8 +180,8 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     }
 
     @Override
-    public void addConstInt(int constVal) {
-        DO_ConstInt intDO = new DO_ConstInt(constVal, "int");
+    public void addConstInt(String constVal) {
+        DO_ConstInt intDO = new DO_ConstInt(Integer.parseInt(constVal), "int");
         stack.push(intDO);
     }
 
@@ -218,6 +218,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
     @Override
     public void evalBinary(int pLine, int pCol) {
+        printSemanticStack();
         DataObject do1 = (DataObject) stack.pop();
         OperatorRegister op = (OperatorRegister) stack.pop();
         DataObject do2 = (DataObject) stack.pop();

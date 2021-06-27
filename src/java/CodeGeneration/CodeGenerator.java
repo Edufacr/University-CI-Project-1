@@ -65,10 +65,10 @@ public class CodeGenerator {
 		String result;
 		switch (op.getToken()){
 			default:
-			case "=":
-				result = 	"lea ax, "+do1.getToken()+"\n" +
-							do2.generateCode() +"\n" +
-							"mov word ptr [ax], bx";
+			case "assign":
+				result = 	"lea di, "+do2.getToken()+"\n" +
+							do1.generateCode() +"\n" +
+							"mov word ptr [di], bx";
 				break;
 		}
 		return result;

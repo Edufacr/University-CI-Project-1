@@ -22,7 +22,7 @@ public interface ISemanticAnalyzer {
 
     void checkFunc(String pIdentifier, int pLine, int pCol);
 
-    void addConstInt(int constVal);
+    void addConstInt(String constVal);
 
     void addConstCharString(String charStringConst);
 

@@ -49,23 +49,23 @@ n---------------
 // Identifiers
 terminal String IDENTIFIER; 
 // Special Symbols
-terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
+terminal String SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
-terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
+terminal sTRING CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
 // Mandatory Types
 terminal String CHAR, INT, LONG, SHORT, VOID;
 // Mandatory Functions
 terminal READ, WRITE;
 // Numeric Operators
-terminal PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
-terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
+terminal String PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
+terminal String PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
 
 //Boolean Operators
 //                                          <=          >=              >       <
 terminal AND, OR, EQUALS, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
 
 //Literals
-terminal String NUMCONST; 
+terminal String NUMCONST;
 terminal String STRINGS;
 terminal String CHARS;
 
@@ -292,17 +292,17 @@ defaultCase ::=       DEFAULT COLON stmtList
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 // TODO: Revisar si se debe agregar generacion de codigo a asignaciones
-expr ::=            IDENTIFIER:id  assignOp {: sa.addExpressionVar(id, idleft, idright); :} expr
+expr ::=            IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :} assignOp expr
                 |   IDENTIFIER error        {: report_error("Assign Statement"); :}
                 |   simpleExpr {: sa.evalBinary(0,0); :}
                 ; 
 
-assignOp ::=      ASSIGN
-                | PLUS_ASSIGN
-                | MINUS_ASSIGN
-                | MULT_ASSIGN
-                | DIV_ASSIGN
-                | MOD_ASSIGN
+assignOp ::=      ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | PLUS_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | MINUS_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | MULT_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | DIV_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | MOD_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
                 ; 
                 
 simpleExpr ::=    simpleExpr OR andExpr 
@@ -374,7 +374,7 @@ argList ::=     argList COMMA expr
                 ;
 
 // Literals
-literals ::=      NUMCONST:num    {: RESULT = num; :}
+literals ::=      NUMCONST:num    {: sa.addConstInt(num); :}
                 | CHARS:chars     {: RESULT = chars; :}
                 | STRINGS:strings {: RESULT = strings; :}
                 ;

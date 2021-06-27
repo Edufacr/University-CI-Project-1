@@ -14,6 +14,6 @@ public class OperatorRegister extends SemanticRegister {
 
     @Override
     public String toString() {
-        return "IdRegister: " + this.token;
+        return "OpRegister [ token: " + this.token + " ]";
     }
 }
