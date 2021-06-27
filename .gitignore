@@ -35,3 +35,6 @@ Scanner.java
 #CUP output
 Parser.java~
 Parser.java
+
+#VS Code
+.vscode

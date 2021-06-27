@@ -1,49 +1,387 @@
-/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
+import SemanticAnalysis.*;
 
-parser code
-{:
+
+
+
+parser code{:
+
+    ISemanticAnalyzer sa = new SemanticAnalyzer();
+
+    // Syntaxis
+    public void report_error(String sectionName){
+        System.out.println("Sección: " + sectionName );
+    }
+
+    public void report_error(String sectionName, String message){
+        report_error(sectionName);
+        System.out.println(message);
+    }
+
     public void syntax_error(Symbol s){
-        System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        System.out.println("------------------");
+        System.out.println("Error de Sintaxis:");
+        if(s.value == null){
+            System.out.println("Unexpected EOF: More Tokens Expected " );
+        }
+        else{
+            System.out.println("Unexpected Token: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
     }
 
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-        System.out.println("Error de Sintaxis: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        if(s.value == null){
+            System.out.println("Unrecovered Syntax Error At EOF: More tokens needed to recover.");
+        }
+        else {
+            System.out.println("Unrecovered Syntax Error: "+ s.value + " Linea "+(s.left+1)+" columna "+(s.right+1) );
+        }
     }
-:}
+:};
 
-/* Terminals (tokens returned by the scanner). */
-terminal SEMICOLON, ID, COMMA, ASSIGN, RBRACK, LBRACK, CONST, INT, CHAR, STATIC, LONG, SHORT;        // our scanner provides numbers as integers
-terminal Integer NUMCONST;
+/* 
+--------------
+Terminals 
 
-/* Non terminals */
-non terminal program, decs, vars, varDecl, constKey, scopedVarDecl, varDeclInit, varDeclId, typeSpec, functions, varDeclList, simpleExp;
+n---------------
+*/
 
-//non terminal Integer    expr;      // used to store evaluated subexpressions
+// Identifiers
+terminal String IDENTIFIER; 
+// Special Symbols
+terminal SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
+// Mandatory Reserved Words
+terminal CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
+// Mandatory Types
+terminal String CHAR, INT, LONG, SHORT, VOID;
+// Mandatory Functions
+terminal READ, WRITE;
+// Numeric Operators
+terminal PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
+terminal PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
 
-/* The grammar rules */
+//Boolean Operators
+//                                          <=          >=              >       <
+terminal AND, OR, EQUALS, DISTINCT, NOT, LESS_EQUALS, GREATER_EQUALS, GREATER, LESS;
 
-program ::= decs;
-decs ::= functions
-        | vars functions;
+//Literals
+terminal String NUMCONST; 
+terminal String STRINGS;
+terminal String CHARS;
 
-vars ::= vars varDecl | ; //epsilon
-varDecl ::= constKey typeSpec varDeclList SEMICOLON;
-constKey ::= CONST | /*nada*/ ; //epsilon
+// Extra Reserved Words
+terminal STATIC;
+/* 
+--------------
+Non terminals
+--------------
+*/
 
-scopedVarDecl ::= STATIC typeSpec varDeclList SEMICOLON 
-                | typeSpec varDeclList SEMICOLON; //mas adelante
+// Program Structure
+non terminal program, decls, vars, functions;
 
-varDeclList ::= varDeclList COMMA varDeclInit 
-            | varDeclInit;
+// Const & Vars Declaration
+non terminal constDecl, varDecl, varDeclList;
 
-varDeclInit ::= varDeclId 
-            | varDeclId ASSIGN NUMCONST;
+// Literals
+non terminal String literals;
 
-varDeclId ::= ID 
-            | ID LBRACK NUMCONST RBRACK;
+// Types
+non terminal String typeSpec;
 
-typeSpec ::=  INT 
-            | CHAR 
-            | LONG 
-            | SHORT;
+// Functions
+non terminal funcDecl, paramList, params, funcBody;
+
+// CodeBlock
+non terminal codeBlock;
+
+// Statements
+non terminal stmtList, stmt, exprStmt,functionsStmt;
+
+// Expressions
+non terminal expr, sumExpr, simpleExpr;
+
+// Assignations
+non terminal assignOp;
+
+// Bool Expr
+non terminal andExpr, unaryRelExpr, relExpr, relOp;
+
+// SumExpression
+non terminal mulExpr, unaryExpr, factor, immutable;
+
+// Operators
+non terminal sumOp, mulOp, unaryOp, doubleUnaryOp;
+
+// Calls
+non terminal call, args, argList;
+
+// Flow Control 
+non terminal ifStmt,elseStmt, iterStmt, switchStmt;
+
+// Switch 
+non terminal switchBody, caseList, case, defaultCase;
+
+// Commmands
+non terminal returnStmt, continueStmt, breakStmt;
+
+
+
+/* 
+--------------
+Precedence
+--------------
+*/
+
+start with program;
+
+/* 
+--------------
+Grammar Rules
+--------------
+*/
+
+// Program Structure
+program   ::=     decls {: sa.endOfCode(); :}
+                ;
+
+decls     ::=     vars functions
+                | functions
+                | vars error  {: report_error("Estructura del Programa","Se debe especificar al menos una función"); :}
+                ;
+
+vars      ::=     vars varDecl
+                | vars constDecl
+                | varDecl
+                | constDecl
+                ;
+
+// Const & Vars Declaration
+constDecl ::=     CONST typeSpec IDENTIFIER ASSIGN literals SEMICOLON
+                | CONST error 
+                    {: report_error("Declaracion de Constante"); :} 
+                  SEMICOLON 
+                ;
+
+varDecl   ::=     typeSpec:type varDeclList SEMICOLON {: sa.insertVar(); :}
+                | typeSpec error
+                  {: report_error("Declaracion de Variable"); :}
+                  SEMICOLON 
+                ; 
+
+varDeclList ::=   varDeclList COMMA IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                | IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                ;
+
+// Functions
+functions ::=     functions funcDecl
+                | funcDecl
+                | error {: report_error("Funciones del Programa"); :} funcDecl  
+                ;
+
+funcDecl ::=      typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFuncDecl(); :} params RPAREN {: sa.insertFuncDecl(); :} funcBody
+                | VOID:type {: sa.saveType(type, typeleft, typeright); :} IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} LPAREN {: sa.saveFuncDecl(); :} params RPAREN {: sa.insertFuncDecl(); :}  funcBody
+                | error {: report_error("Declaracion de Funcion"); :} funcBody                                       
+                ;
+
+params ::=        paramList
+                | 
+                ; //epsilon
+
+paramList ::=     typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :} COMMA paramList
+                | typeSpec IDENTIFIER:id {: sa.saveIdentifier(id, idleft, idright); :}
+                ;
+
+// FuncBody
+funcBody ::=      LCURLY vars stmtList RCURLY 
+                | LCURLY vars RCURLY 
+                | LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY vars error RCURLY                      {: report_error("Statements de la Funcion"); :}  
+                | LCURLY error RCURLY                           {: report_error("Cuerpo de la funcion"); :}     
+                ;
+
+// CodeBlock
+codeBlock ::=     LCURLY stmtList RCURLY
+                | LCURLY RCURLY
+                | LCURLY error RCURLY                           {: report_error("Bloque de Codigo"); :}     
+                ;
+
+// Statements
+stmtList ::=      stmtList stmt
+                | stmt
+                ;
+
+stmt ::=          exprStmt
+                | ifStmt
+                | iterStmt
+                | returnStmt 
+                | continueStmt 
+                | breakStmt
+                | functionsStmt 
+                | switchStmt
+                ;
+
+exprStmt ::=      expr SEMICOLON
+                | error SEMICOLON                                                          {: report_error("Expresion Statement"); :}
+                ; 
+     
+// Flow Control 
+ifStmt ::=        IF LPAREN expr RPAREN codeBlock elseStmt
+                | IF error {: report_error("If statement"); :} codeBlock elseStmt                                                 
+                ;
+
+elseStmt ::=      ELSE codeBlock
+                | 
+                ; // epsilon
+
+iterStmt ::=      WHILE LPAREN expr RPAREN codeBlock
+                | WHILE error {: report_error("While statement"); :} codeBlock
+                | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
+                | FOR error {: report_error("For statement"); :} codeBlock                                                  
+                ;
+
+returnStmt ::=    RETURN expr SEMICOLON
+                | RETURN SEMICOLON
+                | RETURN error {: report_error("Return statement"); :} SEMICOLON                                               
+                ;
+
+// TODO: Accion que revise que en la pila hay un registro de if o de while
+breakStmt ::=     BREAK SEMICOLON;
+
+// TODO: Accion que revise que en la pila hay un registro de if o de while
+continueStmt ::=  CONTINUE SEMICOLON;
+ 
+functionsStmt ::= READ LPAREN IDENTIFIER RPAREN SEMICOLON
+                  | READ LPAREN RPAREN SEMICOLON
+                  | READ error 
+                    {: report_error("Read instruction"); :}
+                    SEMICOLON                                                
+                  | WRITE LPAREN argList RPAREN SEMICOLON
+                  | WRITE error 
+                    {: report_error("Write instruction"); :}
+                    SEMICOLON                                                
+                  ;
+
+switchStmt ::=        SWITCH LPAREN IDENTIFIER RPAREN switchBody
+                    | SWITCH error 
+                      {: report_error("Switch Statement"); :}
+                      switchBody                                              
+                    ;
+
+switchBody ::=        LCURLY caseList RCURLY                 
+                    | LCURLY error 
+                      {: report_error("Switch Body"); :}
+                      RCURLY                     
+                    ;
+
+caseList ::=          caseList case 
+                    | case
+                    | caseList defaultCase
+                    | defaultCase
+                    ;
+
+case ::=              CASE NUMCONST COLON stmtList
+                    | CASE error stmtList                                                {: report_error("Case Statement"); :}
+                    ;
+
+defaultCase ::=       DEFAULT COLON stmtList
+                    | DEFAULT error stmtList                                             {: report_error("Default Statement"); :}
+                    ;
+            
+// Expressions
+// Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
+// TODO: Revisar si se debe agregar generacion de codigo a asignaciones
+expr ::=            IDENTIFIER:id  assignOp {: sa.addExpressionVar(id, idleft, idright); :} expr
+                |   IDENTIFIER error        {: report_error("Assign Statement"); :}
+                |   simpleExpr
+                ; 
+
+assignOp ::=      ASSIGN
+                | PLUS_ASSIGN
+                | MINUS_ASSIGN
+                | MULT_ASSIGN
+                | DIV_ASSIGN
+                | MOD_ASSIGN
+                ; 
+                
+simpleExpr ::=    simpleExpr OR andExpr 
+                | andExpr
+                ;
+andExpr ::=       andExpr AND unaryRelExpr 
+                | unaryRelExpr
+                ;
+unaryRelExpr ::=  NOT unaryRelExpr 
+                | relExpr
+                ;
+
+relExpr ::=       sumExpr relOp sumExpr 
+                | sumExpr
+                ;
+
+relOp ::=         LESS_EQUALS 
+                | LESS 
+                | GREATER 
+                | GREATER_EQUALS 
+                | EQUALS 
+                | DISTINCT
+                ;
+
+sumExpr ::=       sumExpr sumOp mulExpr 
+                | mulExpr
+                ;
+
+sumOp ::=     PLUS 
+            | MINUS;
+
+mulExpr ::=   mulExpr mulOp unaryExpr 
+            | unaryExpr;
+
+mulOp ::=     MULT 
+            | DIV 
+            | MOD;
+
+unaryExpr ::= unaryOp factor
+            | factor
+            | doubleUnaryOp IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
+            | IDENTIFIER:id doubleUnaryOp {: sa.addExpressionVar(id, idleft, idright); :}
+            ;
+unaryOp ::=   MINUS
+            | PLUS
+            ;
+
+doubleUnaryOp ::=     PLUS_PLUS
+                    | MINUS_MINUS
+                    ;
+
+factor ::=    immutable 
+            | IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
+            ;
+
+immutable ::=     LPAREN expr RPAREN 
+                | literals
+                | call
+                ;
+
+call ::=    IDENTIFIER:id LPAREN {: sa.saveFuncCall(id, idleft, idright); :} args RPAREN  {: sa.checkFunc(id, idleft, idright); :};
+
+args ::=    argList 
+            | ;
+
+// TODO: Accion semantica para que lo vaya metiendo a una lista
+argList ::=     argList COMMA expr 
+                | expr
+                ;
+
+// Literals
+literals ::=      NUMCONST:num    {: RESULT = num; :}
+                | CHARS:chars     {: RESULT = chars; :}
+                | STRINGS:strings {: RESULT = strings; :}
+                ;
+
+// Types
+typeSpec ::=      INT:type    {: sa.saveType(type, typeleft, typeright); :}
+                | CHAR:type   {: sa.saveType(type, typeleft, typeright); :}
+                | LONG:type   {: sa.saveType(type, typeleft, typeright); :}
+                | SHORT:type  {: sa.saveType(type, typeleft, typeright); :}
+                ;

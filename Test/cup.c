@@ -1,1 +1,0 @@
-const long a = 1;
