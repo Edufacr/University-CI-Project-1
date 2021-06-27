@@ -120,7 +120,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
         params.forEach(param -> codeGen.generateGlobalVarCode(param.getName(), param.getType()));
 
-        codeGen.openProc(funcSymbol, params);
+        codeGen.generateOpenProc(funcSymbol, params);
     }
 
     @Override

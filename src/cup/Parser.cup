@@ -51,7 +51,7 @@ terminal String IDENTIFIER;
 // Special Symbols
 terminal String SEMICOLON, COLON, ASSIGN, COMMA, RBRACK, LBRACK, LPAREN, RPAREN, LCURLY, RCURLY;
 // Mandatory Reserved Words
-terminal sTRING CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
+terminal String CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN, SWITCH, WHILE;
 // Mandatory Types
 terminal String CHAR, INT, LONG, SHORT, VOID;
 // Mandatory Functions
@@ -247,7 +247,7 @@ returnStmt ::=    RETURN expr SEMICOLON
                 ;
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
-breakStmt ::=     BREAK SEMICOLON;
+breakStmt ::=     BREAK SEMICOLON; 
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
 continueStmt ::=  CONTINUE SEMICOLON;

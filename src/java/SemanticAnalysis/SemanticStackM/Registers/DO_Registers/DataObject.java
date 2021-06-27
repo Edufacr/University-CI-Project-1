@@ -20,5 +20,9 @@ public abstract class DataObject extends SemanticRegister implements GenerateCod
 		return "Data Object [ type: " + this.type + ", token: "+this.token+" ]";
 	}
 
+    public String generateCode() {
+        return null;
+    }
+
 }
 

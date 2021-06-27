@@ -74,7 +74,7 @@ public class CodeGenerator {
 		return result;
 	}
 
-	public void openProc(FuncSymbol funcSymbol, ArrayList<VarSymbol> params) {
+	public void generateOpenProc(FuncSymbol funcSymbol, ArrayList<VarSymbol> params) {
 		isOnPROC = true;
 		String procName = funcSymbol.getName();
 		String proc =
