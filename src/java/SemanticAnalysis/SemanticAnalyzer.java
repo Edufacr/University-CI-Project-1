@@ -242,4 +242,15 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
 
     }
+
+    @Override
+    public void checkInLoop(String pIdentifier, int pLine, int pCol) {
+
+        SemanticRegister loopRegister = stack.findRegister(WhileRegister.class);
+        
+        if(loopRegister == null){
+            String errorMessage =  pIdentifier + " statement at line: " + pLine + " column: " + pCol + " is not within a loop or switch";
+            printError(errorMessage); 
+        }
+    }
 }

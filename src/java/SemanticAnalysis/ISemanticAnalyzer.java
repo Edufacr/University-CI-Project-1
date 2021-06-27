@@ -22,6 +22,8 @@ public interface ISemanticAnalyzer {
 
     void checkFunc(String pIdentifier, int pLine, int pCol);
 
+    void checkInLoop(String pIdentifier, int pLine, int pCol);
+
     void addConstInt(String constVal);
 
     void addConstCharString(String charStringConst);

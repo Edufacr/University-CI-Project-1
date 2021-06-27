@@ -247,10 +247,10 @@ returnStmt ::=    RETURN expr SEMICOLON
                 ;
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
-breakStmt ::=     BREAK SEMICOLON; 
+breakStmt ::=     BREAK:id {: sa.checkInLoop(id, idleft, idright); :} SEMICOLON; 
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
-continueStmt ::=  CONTINUE SEMICOLON;
+continueStmt ::=  CONTINUE:id {: sa.checkInLoop(id, idleft, idright); :} SEMICOLON;
  
 functionsStmt ::= READ LPAREN IDENTIFIER RPAREN SEMICOLON
                   | READ LPAREN RPAREN SEMICOLON
