@@ -13,6 +13,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     private SemanticStack stack;
     private SymbolTable   table;
     private CodeGenerator codeGen;
+    private int globalHelperVarCounter = 0;
 
     public SemanticAnalyzer(){
         this.stack = new SemanticStack();
@@ -116,6 +117,10 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         FuncSymbol funcSymbol = new FuncSymbol(funcRegister.getName(), funcRegister.getType(), params);
         
         table.insertSymbol(funcRegister.getName(), funcSymbol);
+
+        params.forEach(param -> codeGen.generateGlobalVarCode(param.getName(), param.getType()));
+
+        codeGen.openProc(funcSymbol, params);
     }
 
     @Override
@@ -190,10 +195,9 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     // De esta manera se evitaría que se llame a una funcion como una varaibles
     @Override
     public void addExpressionVar(String var, int pLine, int pCol) {
-        checkVar(var, pLine, pCol);
-        Symbol symbol = table.getSymbol(var);;
+        checkVar(var, pLine, pCol); //revisa que exista en la tabla de simbolos
+        Symbol symbol = table.getSymbol(var);
         if(!(symbol instanceof ErrorSymbol)){
-            
             DO_ExpressionVar expressionVarDO = new DO_ExpressionVar(var, (((VarSymbol) symbol).getType()));
             checkVar(var, pLine, pCol);
             stack.push(expressionVarDO);
@@ -201,30 +205,40 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         } else {
             //Error
         }
-        
-        assert symbol!=null;
-        
-
     }
 
 
     // TODO: Este es un Registro Semantico de operador no un DO
     // Por eso no tiene tipo como los demas DO
     @Override
-    public void addOperator(String operator) {
-        DO_Operator operatorDO = new DO_Operator(operator, "OPERATOR");
-        stack.push(operatorDO);
+    public void addOperator(String operator, int pLine, int pCol) {
+        OperatorRegister operatorRegister = new OperatorRegister(operator, pLine, pCol);
+        stack.push(operatorRegister);
     }
 
     @Override
     public void evalBinary(int pLine, int pCol) {
         DataObject do1 = (DataObject) stack.pop();
-        // TODO: Cambiar a operador
-        DataObject op = (DataObject) stack.pop();
+        OperatorRegister op = (OperatorRegister) stack.pop();
         DataObject do2 = (DataObject) stack.pop();
 
         if(!do1.getType().equals(do2.getType())){
             printError("Types do not match: " + do1.getToken() + " and "+ do2.getToken()+" in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + ".");
+        } else {
+            String resultVarName = "tempVar"+globalHelperVarCounter;
+            String codeBlock = codeGen.generateOperation(resultVarName, do1, do2, op);
+            codeGen.addToCodeSegment(codeBlock);
+            codeGen.generateGlobalVarCode(resultVarName, "");
+
+            this.globalHelperVarCounter++;
+
+//            if(do1.getType().equals("int") && do2.getType().equals("int")){
+//                //Constant folding
+//            } else {
+//
+//            }
         }
+
+
     }
 }

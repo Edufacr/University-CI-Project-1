@@ -9,4 +9,9 @@ public class DO_ConstInt extends DataObject {
         super.type = type;
         super.token = String.valueOf(value);
     }
+
+    @Override
+    public String generateCode() {
+        return "mov bx, ["+value+"]";
+    }
 }

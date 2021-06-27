@@ -28,7 +28,7 @@ public interface ISemanticAnalyzer {
 
     void addExpressionVar(String var, int pLine, int pCol);
 
-    void addOperator(String operator);
+    void addOperator(String operator, int pLine, int pCol);
 
     void evalBinary(int pLine, int pCol);
 

@@ -1,7 +1,7 @@
 package SemanticAnalysis.SemanticStackM.Registers;
 
 public class IdRegister extends SemanticRegister {
-    private String id;
+    private final String id;
     
     public IdRegister(String pId, int pLine, int pCol){
         super(pLine, pCol);

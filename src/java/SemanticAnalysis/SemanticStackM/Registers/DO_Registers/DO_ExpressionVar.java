@@ -7,4 +7,16 @@ public class DO_ExpressionVar extends DataObject{
         super.token = token;
         super.type = type;
     }
+
+    @Override
+    public String generateCode() {
+        String result = "";
+//        switch (type){
+//            case "int":
+//            default:
+//                result = ""
+//                break;
+//        }
+        return result;
+    }
 }

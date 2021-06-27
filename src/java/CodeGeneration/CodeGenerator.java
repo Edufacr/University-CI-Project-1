@@ -1,10 +1,18 @@
 package CodeGeneration;
 
+import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.DataObject;
+import SemanticAnalysis.SemanticStackM.Registers.OperatorRegister;
+import SemanticAnalysis.SymbolTableM.FuncSymbol;
+import SemanticAnalysis.SymbolTableM.VarSymbol;
+
+import java.util.ArrayList;
+
 public class CodeGenerator {
     
     private String dataSegment;
     private String codeSegment;
-	private FileGenerator fileGenerator;
+	private final FileGenerator fileGenerator;
+	private boolean isOnPROC;
 
 	public CodeGenerator() {
 		this.dataSegment = "";
@@ -43,5 +51,45 @@ public class CodeGenerator {
 		this.dataSegment += pLine + "\n";
 	}
 
+	public void addToCodeSegment(String pLine) {
+		if(isOnPROC){
+			isOnPROC = false;
+			this.codeSegment = this.codeSegment.replace("{PROC CONTENT}", pLine);
+		} else {
+			this.codeSegment += pLine + "\n";
+		}
+	}
 
+
+	public String generateOperation(String resultVarName, DataObject do1, DataObject do2, OperatorRegister op) {
+		String result;
+		switch (op.getToken()){
+			default:
+			case "=":
+				result = 	"lea ax, "+do1.getToken()+"\n" +
+							do2.generateCode() +"\n" +
+							"mov word ptr [ax], bx";
+				break;
+		}
+		return result;
+	}
+
+	public void openProc(FuncSymbol funcSymbol, ArrayList<VarSymbol> params) {
+		isOnPROC = true;
+		String procName = funcSymbol.getName();
+		String proc =
+				procName + 	" proc near\n" +
+							"	push ax\n" +
+							"	push bx\n" +
+							"	push cx\n" +
+							"	push dx\n" +
+							"	{PROC CONTENT}\n" +
+							"	pop dx\n" +
+							"	pop cx\n" +
+							"	pop bx\n" +
+							"	pop ax\n" +
+							"	ret\n" +
+				procName + 	" endp\n";
+		this.codeSegment += proc + "\n";
+	}
 }

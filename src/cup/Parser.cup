@@ -294,7 +294,7 @@ defaultCase ::=       DEFAULT COLON stmtList
 // TODO: Revisar si se debe agregar generacion de codigo a asignaciones
 expr ::=            IDENTIFIER:id  assignOp {: sa.addExpressionVar(id, idleft, idright); :} expr
                 |   IDENTIFIER error        {: report_error("Assign Statement"); :}
-                |   simpleExpr
+                |   simpleExpr {: sa.evalBinary(0,0); :}
                 ; 
 
 assignOp ::=      ASSIGN
