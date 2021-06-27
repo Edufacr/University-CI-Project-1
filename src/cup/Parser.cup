@@ -292,30 +292,30 @@ defaultCase ::=       DEFAULT COLON stmtList
 // Expressions
 // Las expresiones pueden ser asignaciones, expresiones aritméticas o booleanas o literales.
 // TODO: Revisar si se debe agregar generacion de codigo a asignaciones
-expr ::=            IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :} assignOp expr
+expr ::=            IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :} assignOp expr {: sa.evalBinary(idleft,idright); :}
                 |   IDENTIFIER error        {: report_error("Assign Statement"); :}
-                |   simpleExpr {: sa.evalBinary(0,0); :}
+                |   simpleExpr 
                 ; 
 
-assignOp ::=      ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
-                | PLUS_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+assignOp ::=      ASSIGN:op       {: sa.addOperator(op, opleft, opright); :}
+                | PLUS_ASSIGN:op  {: sa.addOperator(op, opleft, opright); :}
                 | MINUS_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
-                | MULT_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
-                | DIV_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
-                | MOD_ASSIGN:op {: sa.addOperator(op, opleft, opright); :}
+                | MULT_ASSIGN:op  {: sa.addOperator(op, opleft, opright); :}
+                | DIV_ASSIGN:op   {: sa.addOperator(op, opleft, opright); :}
+                | MOD_ASSIGN:op   {: sa.addOperator(op, opleft, opright); :}
                 ; 
                 
-simpleExpr ::=    simpleExpr OR andExpr 
+simpleExpr ::=    simpleExpr OR andExpr     {: /*sa.evalBinary(0,0);*/ :}
                 | andExpr
                 ;
-andExpr ::=       andExpr AND unaryRelExpr 
+andExpr ::=       andExpr AND unaryRelExpr  {: /*sa.evalBinary(0,0);*/ :}
                 | unaryRelExpr
                 ;
 unaryRelExpr ::=  NOT unaryRelExpr 
                 | relExpr
                 ;
 
-relExpr ::=       sumExpr relOp sumExpr 
+relExpr ::=       sumExpr relOp sumExpr     {: /*sa.evalBinary(0,0);*/ :}
                 | sumExpr
                 ;
 
@@ -327,14 +327,14 @@ relOp ::=         LESS_EQUALS
                 | DISTINCT
                 ;
 
-sumExpr ::=       sumExpr sumOp mulExpr 
+sumExpr ::=       sumExpr sumOp mulExpr     {: /*sa.evalBinary(0,0);*/ :}
                 | mulExpr
                 ;
 
 sumOp ::=     PLUS 
             | MINUS;
 
-mulExpr ::=   mulExpr mulOp unaryExpr 
+mulExpr ::=   mulExpr mulOp unaryExpr       {: /*sa.evalBinary(0,0);*/ :}
             | unaryExpr;
 
 mulOp ::=     MULT 
@@ -355,7 +355,7 @@ doubleUnaryOp ::=     PLUS_PLUS
                     ;
 
 factor ::=    immutable 
-            | IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
+            | IDENTIFIER:id               {: sa.addExpressionVar(id, idleft, idright); :}
             ;
 
 immutable ::=     LPAREN expr RPAREN 
