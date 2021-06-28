@@ -13,6 +13,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     private SemanticStack stack;
     private SymbolTable   table;
     private CodeGenerator codeGen;
+
     private int globalHelperVarCounter        = 0;
     private int globalHelperWhileLabelCounter = 0;
     private int globalHelperIfLabelCounter    = 0;
@@ -29,16 +30,16 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
         System.out.println();
     }
 
-    public void printSymbolTable(){
+    private  void printSemanticStack(){
+        System.out.println(stack.toString());
+    }
+
+    private void printSymbolTable(){
         table.print();
     }
 
-    public void printSemanticStack(){
-        System.out.println(stack.toString());
-    }
-    
     @Override
-    public void saveType(String pType, int pLine, int pCol) {
+    public void saveType(Types pType, int pLine, int pCol) {
         SemanticRegister register = new TypeRegister(pType,pLine,pCol);
         stack.push(register);
     }
@@ -205,6 +206,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
             stack.push(expressionVarDO);
             
         } else {
+
             //Error
         }
     }

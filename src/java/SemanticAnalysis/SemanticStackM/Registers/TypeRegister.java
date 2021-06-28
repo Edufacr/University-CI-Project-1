@@ -1,14 +1,17 @@
 package SemanticAnalysis.SemanticStackM.Registers;
 
-public class TypeRegister extends SemanticRegister {
-    private String type;
+import SemanticAnalysis.Types;
 
-    public TypeRegister(String pType, int pLine, int pCol){
+public class TypeRegister extends SemanticRegister {
+
+    private Types type;
+
+    public TypeRegister(Types pType, int pLine, int pCol){
         super(pLine, pCol);
-       this.type = pType; 
+        this.type = pType; 
     }
 
-    public String getType() {
+    public Types getType() {
         return type;
     }
 
