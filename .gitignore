@@ -38,3 +38,7 @@ Parser.java
 
 #VS Code
 .vscode
+
+# ASM
+
+*.asm

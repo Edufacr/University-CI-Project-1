@@ -11,14 +11,27 @@ import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.DataObject;
 
 public class SemanticAnalyzer implements ISemanticAnalyzer {
 
-    private final SemanticStack stack;
-    private final SymbolTable table;
-    private final CodeGenerator codeGen;
+
+    private static SemanticAnalyzer instance = null;
+    private SemanticStack stack;
+    private SymbolTable table;
+    private CodeGenerator codeGen;
     private int globalHelperVarCounter = 0;
     private int globalHelperWhileLabelCounter = 0;
     private int globalHelperIfLabelCounter = 0;
 
-    public SemanticAnalyzer() {
+    public static SemanticAnalyzer getInstance(){
+        if(instance == null) {
+            instance = new SemanticAnalyzer();
+        }
+        return instance;
+    }
+
+    public void setFileName(String pFileName){
+        codeGen.setFileName(pFileName);
+    }
+
+    private SemanticAnalyzer() {
         this.stack = new SemanticStack();
         this.table = new SymbolTable();
         this.codeGen = new CodeGenerator();
@@ -149,7 +162,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         boolean isError = false;
         String errorMessage = "Undefined error";
-        DataObject resDo = new DO_ExpressionVar("FuncRet", "ERROR");
+        DataObject resDo = new DO_ExpressionVar("FuncRet", "ERROR");;
 
         if (!(table.isDefined(pIdentifier))) {
             errorMessage = "Function:  " + pIdentifier + " in line: " 
@@ -182,7 +195,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
                 isError = true;
             } else {
                 for (int i = 0; i < params.size(); i++) {
-                    if (!params.get(i).getType().equals(inParams.get(i).getType())) {
+                    if (params.get(i).getType() != inParams.get(i).getType()) {
                         errorMessage = "Mismatch parameter type in function: " 
                                 + pIdentifier + " in line: "
                                 + (pLine + 1) + ", in column: " + (pCol + 1) 
@@ -251,7 +264,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         if (!(rightDO.isError() || leftDO.isError())) {
 
-            if ((!rightDO.getType().equals(leftDO.getType()))) {
+            if ((rightDO.getType() != leftDO.getType())) {
                 printError("Types do not match: " + rightDO.getToken() + " and " + leftDO.getToken() + " in line: "
                         + (pLine + 1) + ", in column: " + (pCol + 1) + ".");
             } else {
@@ -271,22 +284,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
     @Override
     public void evalUnary(int pLine, int pCol) {
-        printSemanticStack();
-        DataObject unaryDO = (DataObject) stack.pop();
-        OperatorRegister op = (OperatorRegister) stack.pop();
-
-        if(!(unaryDO instanceof DO_ExpressionVar)){
-            printError("Unary Operator only works on numbers");
-        } else {
-            String resultVarName = "tempVar" + globalHelperVarCounter;
-            codeGen.generateGlobalVarCode(resultVarName, "");
-            String codeBlock = codeGen.generateOperation(resultVarName, null, unaryDO, op);
-            codeGen.addToCodeSegment(codeBlock);
-            stack.push(new DO_ExpressionVar(resultVarName, unaryDO.getType())); // add resulting do
-            this.globalHelperVarCounter++;
-            return;
-        }
-        stack.push(new DO_ExpressionVar("ResError", "ERROR"));
+        
     }
 
     @Override

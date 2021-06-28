@@ -8,9 +8,14 @@ import java.nio.file.Paths;
 public class FileGenerator implements IConstants {
 
 	private String content;
+	private String fileName = "test";
 
 	public FileGenerator(){
 		loadTemplate(); 
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	private boolean loadTemplate() {
@@ -32,10 +37,9 @@ public class FileGenerator implements IConstants {
 	
 	public boolean saveCode() {
 		try {
-			File output = new File(OUTPUT_PATH + "Test" + ".asm");
+			File output = new File(OUTPUT_PATH + fileName + ".asm");
 			output.createNewFile();
-			// TODO: Dynamically get filename from user input file
-            FileWriter myWriter = new FileWriter(OUTPUT_PATH + "Test" + ".asm");
+            FileWriter myWriter = new FileWriter(OUTPUT_PATH + fileName + ".asm");
             myWriter.write(content);
             myWriter.close();
 			System.out.println("Succes Creating File at: " + OUTPUT_PATH);

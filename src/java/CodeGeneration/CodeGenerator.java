@@ -20,6 +20,10 @@ public class CodeGenerator {
 		this.fileGenerator = new FileGenerator();
 	}
 	
+	public void setFileName(String pFileName) {
+		this.fileGenerator.setFileName(pFileName);
+	}
+
     public void generateGlobalVarCode(String pName, String pType){
         String decl;
 
