@@ -104,6 +104,20 @@ public class CodeGenerator {
 							"lea di, "+resultVarName+"\n" +
 							"mov word ptr[di], ax";
 				break;
+			case "++":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							"inc ax" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
+				break;
+			case "--":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							"dec ax" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
+				break;
 		}
 		return result;
 	}
