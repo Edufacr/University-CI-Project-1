@@ -13,7 +13,9 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     private SemanticStack stack;
     private SymbolTable   table;
     private CodeGenerator codeGen;
-    private int globalHelperVarCounter = 0;
+    private int globalHelperVarCounter        = 0;
+    private int globalHelperWhileLabelCounter = 0;
+    private int globalHelperIfLabelCounter    = 0;
 
     public SemanticAnalyzer(){
         this.stack = new SemanticStack();
@@ -252,5 +254,85 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
             String errorMessage =  pIdentifier + " statement at line: " + pLine + " column: " + pCol + " is not within a loop or switch";
             printError(errorMessage); 
         }
+    }
+
+    @Override
+    public void saveWhile(int pLine, int pCol) {
+        String startLabel = "while_label_" + this.globalHelperWhileLabelCounter;
+        String exitLabel = "exit_while_label_" + this.globalHelperWhileLabelCounter;
+
+        this.globalHelperWhileLabelCounter++;
+        
+        SemanticRegister whileRegister = new WhileRegister(startLabel, exitLabel, pLine, pCol);
+
+        codeGen.generateLabel(startLabel);
+
+        stack.push(whileRegister);
+    }
+
+    @Override
+    public void testWhile() {
+        DataObject do1 = (DataObject) stack.pop();
+        WhileRegister whileRegister = (WhileRegister) stack.findRegister(WhileRegister.class); 
+
+        // TODO: Enum de tipos o revisar  
+        if(!(do1.getType() == "Int")){ 
+            String errorMessage = "Expression in while statement at line: " + whileRegister.getLine() + " column: " + whileRegister.getColumn() + "is not of type int" ;
+            printError(errorMessage);
+            return;
+        }
+
+        do1.generateCode();
+        codeGen.generateEvalBooleanExpression(whileRegister.getExitLabel());
+    }
+
+    @Override
+    public void endWhile() {
+        WhileRegister whileRegister = (WhileRegister) stack.findRegister(WhileRegister.class); 
+
+        codeGen.generateLabelJump(whileRegister.getStartLabel());
+        codeGen.generateLabel(whileRegister.getExitLabel());
+        
+        stack.pop();
+    }
+
+    @Override
+    public void saveIf(int pLine, int pCol) {
+       SemanticRegister ifRegister = new IfRegister(globalHelperIfLabelCounter,pLine,pCol);
+       stack.push(ifRegister);
+       globalHelperIfLabelCounter++;
+    }
+
+    @Override
+    public void testIf() {
+        DataObject do1 = (DataObject) stack.pop();
+        IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class); 
+        
+        // TODO: Enum de tipos o revisar 
+        if(!(do1.getType() == "Int")){
+            String errorMessage = "Expression in if statement at line: " + ifRegister.getLine() + " column: " + ifRegister.getColumn() + "is not of type int" ;
+            printError(errorMessage);
+            return;
+        }
+        do1.generateCode();
+        codeGen.generateEvalBooleanExpression(ifRegister.getElseLabel());
+        
+    }
+
+    @Override
+    public void saveElse() {
+        IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class); 
+        codeGen.generateLabelJump(ifRegister.getExitLabel());
+        codeGen.generateLabel(ifRegister.getElseLabel());
+        
+    }
+
+    @Override
+    public void endIf() {
+        IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class); 
+        codeGen.generateLabel(ifRegister.getExitLabel());
+
+        // TODO: En algunos casos no 
+        stack.pop(); 
     }
 }

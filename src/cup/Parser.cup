@@ -227,15 +227,15 @@ exprStmt ::=      expr SEMICOLON
                 ; 
      
 // Flow Control 
-ifStmt ::=        IF LPAREN expr RPAREN codeBlock elseStmt
+ifStmt ::=        IF:ifToken {: sa.saveIf(ifTokenleft,ifTokenright); :} LPAREN expr RPAREN {: sa.testIf(); :} codeBlock elseStmt
                 | IF error {: report_error("If statement"); :} codeBlock elseStmt                                                 
                 ;
 
-elseStmt ::=      ELSE codeBlock
+elseStmt ::=      ELSE {: sa.saveElse(); :} codeBlock {: sa.endIf(); :}
                 | 
                 ; // epsilon
 
-iterStmt ::=      WHILE LPAREN expr RPAREN codeBlock
+iterStmt ::=      WHILE:whileToken {: sa.saveWhile(whileTokenleft,whileTokenright); :} LPAREN expr RPAREN {: sa.testWhile(); :} codeBlock {: sa.endWhile(); :}
                 | WHILE error {: report_error("While statement"); :} codeBlock
                 | FOR LPAREN expr SEMICOLON expr SEMICOLON expr RPAREN codeBlock
                 | FOR error {: report_error("For statement"); :} codeBlock                                                  
@@ -246,7 +246,7 @@ returnStmt ::=    RETURN expr SEMICOLON
                 | RETURN error {: report_error("Return statement"); :} SEMICOLON                                               
                 ;
 
-// TODO: Accion que revise que en la pila hay un registro de if o de while
+//TODO: Accion que revise que en la pila hay un registro de if o de while
 breakStmt ::=     BREAK:id {: sa.checkInLoop(id, idleft, idright); :} SEMICOLON; 
 
 // TODO: Accion que revise que en la pila hay un registro de if o de while
@@ -348,7 +348,7 @@ unaryExpr ::= unaryOp factor
             ;
 unaryOp ::=   MINUS
             | PLUS
-            ;
+            ; 
 
 doubleUnaryOp ::=     PLUS_PLUS
                     | MINUS_MINUS

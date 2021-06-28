@@ -12,6 +12,20 @@ public interface ISemanticAnalyzer {
 
     void saveFuncCall(String pIdentifier, int pLine, int pCol);
 
+    void saveIf(int pLine, int pCol);
+    
+    void testIf();
+
+    void saveElse();
+
+    void endIf();
+    
+    void saveWhile(int pLine, int pCol);
+    
+    void testWhile();
+
+    void endWhile();
+    
     void saveFuncDecl();
     
     void insertVar();

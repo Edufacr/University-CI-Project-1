@@ -36,11 +36,7 @@ public class CodeGenerator {
     
 	public void commitCodeSegment() {
         this.fileGenerator.addCodeSegment(this.codeSegment);
-    }
-	
-	public void addWhile() {
-
-	}
+    }	
 
 	public void generateFile() {
 		this.fileGenerator.saveCode();
@@ -91,5 +87,27 @@ public class CodeGenerator {
 							"	ret\n" +
 				procName + 	" endp\n";
 		this.codeSegment += proc + "\n";
+	}
+
+	public void generateEvalBooleanExpression(String pLabel) {
+		String booleanExpression = 
+			"cmp bx, 0\n" + 
+			"je " + pLabel + "\n";
+
+		this.codeSegment += booleanExpression;	
+	}
+
+	public void generateLabel(String pLabel) {
+		String label =
+				pLabel + ":\n";
+
+		this.codeSegment += label;
+	}
+
+	public void generateLabelJump(String pLabel) {
+		String jump = 
+				"JUMP " + pLabel;	
+
+		this.codeSegment += jump + "\n";
 	}
 }
