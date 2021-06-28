@@ -302,26 +302,26 @@ assignOp ::=      ASSIGN:op       {: sa.addOperator(op, opleft, opright); :}
                 | MOD_ASSIGN:op   {: sa.addOperator(op, opleft, opright); :}
                 ; 
                 
-simpleExpr ::=    simpleExpr OR andExpr     {: /*sa.evalBinary(0,0);*/ :}
+simpleExpr ::=    simpleExpr OR andExpr     {: sa.evalBinary(0,0); :}
                 | andExpr
                 ;
-andExpr ::=       andExpr AND unaryRelExpr  {: /*sa.evalBinary(0,0);*/ :}
+andExpr ::=       andExpr AND unaryRelExpr  {: sa.evalBinary(0,0); :}
                 | unaryRelExpr
                 ;
 unaryRelExpr ::=  NOT unaryRelExpr 
                 | relExpr
                 ;
 
-relExpr ::=       sumExpr relOp sumExpr     {: /*sa.evalBinary(0,0);*/ :}
+relExpr ::=       sumExpr relOp sumExpr     {: sa.evalBinary(0,0); :}
                 | sumExpr
                 ;
 
-relOp ::=         LESS_EQUALS 
-                | LESS 
-                | GREATER 
-                | GREATER_EQUALS 
-                | EQUALS 
-                | DISTINCT
+relOp ::=         LESS_EQUALS:op {: sa.addOperator(op, opleft, opright); :}
+                | LESS:op {: sa.addOperator(op, opleft, opright); :}
+                | GREATER:op {: sa.addOperator(op, opleft, opright); :}
+                | GREATER_EQUALS:op {: sa.addOperator(op, opleft, opright); :}
+                | EQUALS:op {: sa.addOperator(op, opleft, opright); :}
+                | DISTINCT:op {: sa.addOperator(op, opleft, opright); :}
                 ;
 
 sumExpr ::=       sumExpr sumOp mulExpr     {: sa.evalBinary(0,0); :}
