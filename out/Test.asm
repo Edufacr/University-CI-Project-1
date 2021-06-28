@@ -1,5 +1,9 @@
 datos segment
 
+<<<<<<< Updated upstream
+=======
+c db 4 dup (?) 
+>>>>>>> Stashed changes
 b db 4 dup (?) 
 tempVar0 db 4 dup (?) 
 
@@ -70,6 +74,10 @@ mov word ptr [di], bx
 
 
 
+<<<<<<< Updated upstream
+=======
+{-code-segment}
+>>>>>>> Stashed changes
 
         finale:
             ;Program close
