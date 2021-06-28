@@ -15,6 +15,10 @@ public abstract class DataObject extends SemanticRegister implements GenerateCod
         return this.token;
     }
 
+    public boolean isError(){
+        return type == "ERROR";
+    }
+
     @Override
 	public String toString() {
 		return "Data Object [ type: " + this.type + ", token: "+this.token+" ]";

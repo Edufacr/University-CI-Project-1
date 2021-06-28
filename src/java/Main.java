@@ -11,7 +11,7 @@ class Main {
             //fileName = System.console().readLine();
             //debugger = System.console().readLine();
             debugger = "";
-            fileName = "test/test.c";
+            fileName = "test/Errores.c";
 
             FileReader file = new FileReader(fileName);
             Scanner scanner = new Scanner(file);
