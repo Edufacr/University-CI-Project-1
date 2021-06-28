@@ -16,7 +16,7 @@ class Main {
             //debugger = System.console().readLine();
             debugger = "";
             testRoute = "test/";
-            fileName = "Errores";
+            fileName = "test";
             extension = ".c";
 
             SemanticAnalyzer sm = SemanticAnalyzer.getInstance();

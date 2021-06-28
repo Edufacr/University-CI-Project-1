@@ -161,7 +161,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         boolean isError = false;
         String errorMessage = "Undefined error";
-        DataObject resDo = new DO_ExpressionVar("FuncRet", "ERROR");;
+        DataObject resDo = new DO_ExpressionVar("FuncRet", "error");;
 
         if (!(table.isDefined(pIdentifier))) {
             errorMessage = "Function:  " + pIdentifier + " in line: " 
@@ -282,7 +282,22 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
     @Override
     public void evalUnary(int pLine, int pCol) {
-        
+        printSemanticStack();
+        DataObject unaryDO = (DataObject) stack.pop();
+        OperatorRegister op = (OperatorRegister) stack.pop();
+
+        if(!(unaryDO instanceof DO_ExpressionVar)){
+            printError("Unary Operator only works on numbers");
+        } else {
+            String resultVarName = "tempVar" + globalHelperVarCounter;
+            codeGen.generateGlobalVarCode(resultVarName, "");
+            String codeBlock = codeGen.generateOperation(resultVarName, null, unaryDO, op);
+            codeGen.addToCodeSegment(codeBlock);
+            stack.push(new DO_ExpressionVar(resultVarName, unaryDO.getType())); // add resulting do
+            this.globalHelperVarCounter++;
+            return;
+        }
+        stack.push(new DO_ExpressionVar("ResError", "ERROR"));
     }
 
     @Override

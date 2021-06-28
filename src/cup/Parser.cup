@@ -332,7 +332,7 @@ sumOp ::=     PLUS:op       {: sa.addOperator(op, opleft, opright); :}
             | MINUS:op      {: sa.addOperator(op, opleft, opright); :};
 
 mulExpr ::=   mulExpr mulOp unaryExpr {: sa.evalBinary(0,0); :}
-            | unaryExpr {: sa.evalUnary(0,0); :}
+            | unaryExpr
             ;
 
 mulOp ::=     MULT:op       {: sa.addOperator(op, opleft, opright); :}
@@ -341,8 +341,8 @@ mulOp ::=     MULT:op       {: sa.addOperator(op, opleft, opright); :}
 
 unaryExpr ::= unaryOp factor
             | factor
-            | doubleUnaryOp IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); :}
-            | IDENTIFIER:id doubleUnaryOp {: sa.addExpressionVar(id, idleft, idright); :}
+            | doubleUnaryOp:op IDENTIFIER:id {: sa.addExpressionVar(id, idleft, idright); sa.evalUnary(opleft,opright); :}
+            | IDENTIFIER:id doubleUnaryOp:op {: sa.addExpressionVar(id, idleft, idright); sa.evalUnary(opleft,opright); :}
             ;
 unaryOp ::=   MINUS:op      {: sa.addOperator(op, opleft, opright); :}
             | PLUS:op       {: sa.addOperator(op, opleft, opright); :}

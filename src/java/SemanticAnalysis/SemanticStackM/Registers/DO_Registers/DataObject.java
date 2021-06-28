@@ -16,7 +16,7 @@ public abstract class DataObject extends SemanticRegister implements GenerateCod
     }
 
     public boolean isError(){
-        return type == "ERROR";
+        return type == "error";
     }
 
     @Override
