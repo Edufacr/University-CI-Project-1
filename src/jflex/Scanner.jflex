@@ -126,7 +126,7 @@ StringBoundary = \"
     "&&"                           { return new Symbol(sym.AND, yyline, yycolumn, "and"); }
     "++"                           { return new Symbol(sym.PLUS_PLUS, yyline, yycolumn, "++"); }
     "--"                           { return new Symbol(sym.MINUS_MINUS, yyline, yycolumn, "--"); }
-    "="                            { return new Symbol(sym.ASSIGN, yyline, yycolumn, "assign"); }
+    "="                            { return new Symbol(sym.ASSIGN, yyline, yycolumn, "="); }
     "+"                            { return new Symbol(sym.PLUS, yyline, yycolumn, "+"); }
     ","                            { return new Symbol(sym.COMMA, yyline, yycolumn, "comma"); }
     ";"                            { return new Symbol(sym.SEMICOLON, yyline, yycolumn, ";"); }
@@ -135,7 +135,7 @@ StringBoundary = \"
     "<"                            { return new Symbol(sym.LESS, yyline, yycolumn, "Less"); }
     "!"                            { return new Symbol(sym.NOT, yyline, yycolumn, "Not"); }
     "-"                            { return new Symbol(sym.MINUS, yyline, yycolumn, "Minus"); }
-    "*"                            { return new Symbol(sym.MULT, yyline, yycolumn, "Mult"); }
+    "*"                            { return new Symbol(sym.MULT, yyline, yycolumn, "*"); }
     "/"                            { return new Symbol(sym.DIV, yyline, yycolumn, "Div"); }
     "%"                            { return new Symbol(sym.MOD, yyline, yycolumn, "Mod"); }
     "("                            { return new Symbol(sym.LPAREN, yyline, yycolumn, "("); }

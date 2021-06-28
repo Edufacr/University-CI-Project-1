@@ -327,19 +327,19 @@ relOp ::=         LESS_EQUALS
                 | DISTINCT
                 ;
 
-sumExpr ::=       sumExpr sumOp mulExpr     {: /*sa.evalBinary(0,0);*/ :}
+sumExpr ::=       sumExpr sumOp mulExpr     {: sa.evalBinary(0,0); :}
                 | mulExpr
                 ;
 
-sumOp ::=     PLUS 
-            | MINUS;
+sumOp ::=     PLUS:op       {: sa.addOperator(op, opleft, opright); :}
+            | MINUS:op      {: sa.addOperator(op, opleft, opright); :};
 
-mulExpr ::=   mulExpr mulOp unaryExpr       {: /*sa.evalBinary(0,0);*/ :}
+mulExpr ::=   mulExpr mulOp unaryExpr       {: sa.evalBinary(0,0); :}
             | unaryExpr;
 
-mulOp ::=     MULT 
-            | DIV 
-            | MOD;
+mulOp ::=     MULT:op       {: sa.addOperator(op, opleft, opright); :}
+            | DIV:op       {: sa.addOperator(op, opleft, opright); :}
+            | MOD:op       {: sa.addOperator(op, opleft, opright); :};
 
 unaryExpr ::= unaryOp factor
             | factor

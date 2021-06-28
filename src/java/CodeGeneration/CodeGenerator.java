@@ -57,14 +57,30 @@ public class CodeGenerator {
 	}
 
 
-	public String generateOperation(String resultVarName, DataObject do1, DataObject do2, OperatorRegister op) {
+	public String generateOperation(String resultVarName, DataObject rightDO, DataObject leftDO, OperatorRegister op) {
 		String result;
 		switch (op.getToken()){
 			default:
-			case "assign":
-				result = 	"lea di, "+do2.getToken()+"\n" +
-							do1.generateCode() +"\n" +
+			case "=":
+				result = 	rightDO.generateCode() +"\n" +
+							"lea di, "+leftDO.getToken()+"\n" +
 							"mov word ptr [di], bx";
+				break;
+			case "+":
+				result = 	rightDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							leftDO.generateCode() + "\n" +
+							"add ax, bx\n" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
+				break;
+			case "*":
+				result = 	rightDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							leftDO.generateCode() + "\n" +
+							"mul bx\n" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
 				break;
 		}
 		return result;

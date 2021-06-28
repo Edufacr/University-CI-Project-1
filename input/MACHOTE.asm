@@ -21,12 +21,13 @@ codigo segment
         mov ss, ax
 
         ; carnita del programa
-        call foo
+
+
+        {-code-segment-}
+
         mov ax, word ptr [a]
         call printAX
         jmp finale
-
-        {-code-segment-}
 
         printAX proc near
             ; imprime a la salida estandar un numero que supone estar en el AX
