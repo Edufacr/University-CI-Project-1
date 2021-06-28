@@ -1,5 +1,6 @@
 int a,b,c;
 
 void foo() {
-    b = 10-5;
+    b=2;
+    b++;
  }

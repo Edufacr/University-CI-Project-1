@@ -4,7 +4,6 @@ c db 4 dup (?)
 b db 4 dup (?) 
 a db 4 dup (?) 
 tempVar0 db 4 dup (?) 
-tempVar1 db 4 dup (?) 
 
 
 datos ends
@@ -28,19 +27,14 @@ codigo segment
         ; carnita del programa
 
 
-        mov bx, 10
-mov ax, bx
-mov bx, 5
-sub ax, bx
-lea di, tempVar0
-mov word ptr[di], ax
-lea di, tempVar0
+        lea di, b
 mov bx, word ptr [di]
-lea di, b
-mov word ptr [di], bx
+mov ax, bx
+inc axlea di, tempVar0
+mov word ptr[di], ax
 
 
-        mov ax, word ptr [b]
+        mov ax, word ptr [a]
         call printAX
         jmp finale
 
