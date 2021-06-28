@@ -105,12 +105,12 @@ StringBoundary = \"
     {Real}                         { this.out.addToken(yytext(), "Literales", yyline); }
 
     // Operators
-    "=="                           { return new Symbol(sym.EQUALS, yyline, yycolumn, "Equal"); }
+    "=="                           { return new Symbol(sym.EQUALS, yyline, yycolumn, "=="); }
     "<<="                          { this.out.addToken(yytext(), "Operadores", yyline); }
     ">>="                          { this.out.addToken(yytext(), "Operadores", yyline); }
-    "<="                           { return new Symbol(sym.LESS_EQUALS, yyline, yycolumn, "Less equals"); }
-    ">="                           { return new Symbol(sym.GREATER_EQUALS, yyline, yycolumn, "Greater Equals"); }
-    "!="                           { return new Symbol(sym.DISTINCT, yyline, yycolumn, "Distinct"); }
+    "<="                           { return new Symbol(sym.LESS_EQUALS, yyline, yycolumn, "<="); }
+    ">="                           { return new Symbol(sym.GREATER_EQUALS, yyline, yycolumn, ">="); }
+    "!="                           { return new Symbol(sym.DISTINCT, yyline, yycolumn, "!="); }
     "+="                           { return new Symbol(sym.PLUS_ASSIGN, yyline, yycolumn, "Plus Assign"); }
     "-="                           { return new Symbol(sym.MINUS_ASSIGN, yyline, yycolumn, "Minus Assign"); }
     "*="                           { return new Symbol(sym.MULT_ASSIGN, yyline, yycolumn, "Mult Assign"); }
@@ -130,10 +130,10 @@ StringBoundary = \"
     "+"                            { return new Symbol(sym.PLUS, yyline, yycolumn, "+"); }
     ","                            { return new Symbol(sym.COMMA, yyline, yycolumn, "comma"); }
     ";"                            { return new Symbol(sym.SEMICOLON, yyline, yycolumn, ";"); }
-    ">"                            { return new Symbol(sym.GREATER, yyline, yycolumn, "Greater"); }
+    ">"                            { return new Symbol(sym.GREATER, yyline, yycolumn, ">"); }
     "?"                            { this.out.addToken(yytext(), "Operadores", yyline); }
-    "<"                            { return new Symbol(sym.LESS, yyline, yycolumn, "Less"); }
-    "!"                            { return new Symbol(sym.NOT, yyline, yycolumn, "Not"); }
+    "<"                            { return new Symbol(sym.LESS, yyline, yycolumn, "<"); }
+    "!"                            { return new Symbol(sym.NOT, yyline, yycolumn, "!"); }
     "-"                            { return new Symbol(sym.MINUS, yyline, yycolumn, "-"); }
     "*"                            { return new Symbol(sym.MULT, yyline, yycolumn, "*"); }
     "/"                            { return new Symbol(sym.DIV, yyline, yycolumn, "/"); }
