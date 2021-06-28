@@ -50,4 +50,6 @@ public interface ISemanticAnalyzer {
 
     void evalUnary(int pLine, int pCol);
 
+    void writeFunc();
+
 }

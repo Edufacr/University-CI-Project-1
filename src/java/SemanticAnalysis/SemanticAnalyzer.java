@@ -389,4 +389,10 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         stack.popUntil(IfRegister.class);
     }
+
+    @Override
+    public void writeFunc() {
+        // TODO Auto-generated method stub
+        
+    }
 }
