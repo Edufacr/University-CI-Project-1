@@ -134,9 +134,9 @@ StringBoundary = \"
     "?"                            { this.out.addToken(yytext(), "Operadores", yyline); }
     "<"                            { return new Symbol(sym.LESS, yyline, yycolumn, "Less"); }
     "!"                            { return new Symbol(sym.NOT, yyline, yycolumn, "Not"); }
-    "-"                            { return new Symbol(sym.MINUS, yyline, yycolumn, "Minus"); }
+    "-"                            { return new Symbol(sym.MINUS, yyline, yycolumn, "-"); }
     "*"                            { return new Symbol(sym.MULT, yyline, yycolumn, "*"); }
-    "/"                            { return new Symbol(sym.DIV, yyline, yycolumn, "Div"); }
+    "/"                            { return new Symbol(sym.DIV, yyline, yycolumn, "/"); }
     "%"                            { return new Symbol(sym.MOD, yyline, yycolumn, "Mod"); }
     "("                            { return new Symbol(sym.LPAREN, yyline, yycolumn, "("); }
     ")"                            { return new Symbol(sym.RPAREN, yyline, yycolumn, ")"); }

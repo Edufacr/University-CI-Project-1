@@ -82,6 +82,25 @@ public class CodeGenerator {
 							"lea di, "+resultVarName+"\n" +
 							"mov word ptr[di], ax";
 				break;
+			case "/":
+				result = 	"xor dx, dx\n" +
+							leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"mov cx, bx\n" +
+							"div cx\n" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
+
+				break;
+			case "-":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"sub ax, bx\n" +
+							"lea di, "+resultVarName+"\n" +
+							"mov word ptr[di], ax";
+				break;
 		}
 		return result;
 	}

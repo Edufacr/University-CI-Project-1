@@ -48,4 +48,6 @@ public interface ISemanticAnalyzer {
 
     void evalBinary(int pLine, int pCol);
 
+    void evalUnary(int pLine, int pCol);
+
 }

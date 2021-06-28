@@ -12,6 +12,6 @@ public class DO_ConstInt extends DataObject {
 
     @Override
     public String generateCode() {
-        return "mov bx, ["+value+"]";
+        return "mov bx, "+value;
     }
 }

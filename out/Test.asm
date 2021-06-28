@@ -28,16 +28,16 @@ codigo segment
         ; carnita del programa
 
 
-        mov bx, [3]
-        mov ax, bx
-        mov bx, [2]
-        mul bx
-        lea di, tempVar0
-        mov word ptr[di], ax
-        lea di, tempVar0
-        mov bx, word ptr [di]
-        lea di, b
-        mov word ptr [di], bx
+        mov bx, 10
+mov ax, bx
+mov bx, 5
+sub ax, bx
+lea di, tempVar0
+mov word ptr[di], ax
+lea di, tempVar0
+mov bx, word ptr [di]
+lea di, b
+mov word ptr [di], bx
 
 
         mov ax, word ptr [b]

@@ -245,6 +245,11 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     }
 
     @Override
+    public void evalUnary(int pLine, int pCol) {
+        
+    }
+
+    @Override
     public void checkInLoop(String pIdentifier, int pLine, int pCol) {
 
         SemanticRegister loopRegister = stack.findRegister(WhileRegister.class);
