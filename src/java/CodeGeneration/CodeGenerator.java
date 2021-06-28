@@ -129,7 +129,7 @@ public class CodeGenerator {
 							"jg booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -145,7 +145,7 @@ public class CodeGenerator {
 							"jl booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -161,7 +161,7 @@ public class CodeGenerator {
 							"jle booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -177,7 +177,7 @@ public class CodeGenerator {
 							"jg booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -193,7 +193,7 @@ public class CodeGenerator {
 							"je booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -209,7 +209,7 @@ public class CodeGenerator {
 							"jne booleanTrue" + jumpLableCount 		+ "\n"+
 							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
 							"mov ax, 0" 							+ "\n"+
-							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"jmp booleanExit" + jumpLableCount 	+ "\n"+
 							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
 							"mov ax, 1" 							+ "\n"+
 							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
@@ -258,7 +258,7 @@ public class CodeGenerator {
 
 	public void generateLabelJump(String pLabel) {
 		String jump = 
-				"JUMP " + pLabel;	
+				"jmp " + pLabel;	
 
 		this.codeSegment += jump + "\n";
 	}
