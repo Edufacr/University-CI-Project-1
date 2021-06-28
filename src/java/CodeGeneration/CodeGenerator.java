@@ -27,8 +27,7 @@ public class CodeGenerator {
     public void generateGlobalVarCode(String pName, String pType){
         String decl;
 
-        // TODO: Poner bonito la cantidad de bytes que ocupa
-        decl = pName + " db " + 4 + " dup (?) ";
+        decl = pName + " db 4 dup (?) ";
         
 		addToDataSegment(decl);
         

@@ -124,7 +124,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
             VarSymbol symbol = new VarSymbol(idRegister.getId(), typeRegister.getType());
 
-            // TODO: Preguntarle a la profe si los parametros son globales
             table.insertSymbol(idRegister.getId(), symbol);
             params.add(symbol);
 
@@ -227,7 +226,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
     @Override
     public void addConstCharString(String charStringConst) {
-        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "String");
+        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "string");
         stack.push(charStringDO);
     }
 
@@ -242,8 +241,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         if (!(symbol instanceof ErrorSymbol)) {
             doType = ((VarSymbol) symbol).getType();
         } else {
-            // TODO: Cambiar eventualmente por ENUM
-            doType = "ERROR";
+            doType = "error";
         }
         DO_ExpressionVar expressionVarDO = new DO_ExpressionVar(var, doType);
         stack.push(expressionVarDO);
@@ -279,7 +277,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
             }
         }
-        stack.push(new DO_ExpressionVar("ResError", "ERROR"));
+        stack.push(new DO_ExpressionVar("ResError", "error"));
     }
 
     @Override
@@ -318,8 +316,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         DataObject do1 = (DataObject) stack.pop();
         WhileRegister whileRegister = (WhileRegister) stack.findRegister(WhileRegister.class);
 
-        // TODO: Enum de tipos o revisar
-        if (!(do1.getType() == "Int")) {
+        if (!(do1.getType() == "int")) {
             String errorMessage = "Expression in while statement at line: " + whileRegister.getLine() + " column: "
                     + whileRegister.getColumn() + "is not of type int";
             printError(errorMessage);
@@ -352,8 +349,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         DataObject do1 = (DataObject) stack.pop();
         IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class);
 
-        // TODO: Enum de tipos o revisar
-        if (!(do1.getType() == "Int")) {
+        if (!(do1.getType() == "int")) {
             String errorMessage = "Expression in if statement at line: " + ifRegister.getLine() + " column: "
                     + ifRegister.getColumn() + "is not of type int";
             printError(errorMessage);
@@ -377,7 +373,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class);
         codeGen.generateLabel(ifRegister.getExitLabel());
 
-        // TODO: En algunos casos no
+        // TODO: En algunos casos va a dar
         stack.pop();
     }
 }
