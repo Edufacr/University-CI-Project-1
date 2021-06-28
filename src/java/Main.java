@@ -1,19 +1,28 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import SemanticAnalysis.SemanticAnalyzer;
+
 class Main {
     public static void main(String[] args) throws FileNotFoundException {
         
         String fileName;
+        String testRoute;
+        String extension;
         String debugger;
 
         try {
             //fileName = System.console().readLine();
             //debugger = System.console().readLine();
             debugger = "";
-            fileName = "test/Errores.c";
+            testRoute = "test/";
+            fileName = "Errores";
+            extension = ".c";
 
-            FileReader file = new FileReader(fileName);
+            SemanticAnalyzer sm = SemanticAnalyzer.getInstance();
+            sm.setFileName(fileName);
+
+            FileReader file = new FileReader(testRoute + fileName + extension);
             Scanner scanner = new Scanner(file);
             Parser p = new Parser(scanner);
 

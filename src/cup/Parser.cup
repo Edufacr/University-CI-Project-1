@@ -6,7 +6,7 @@ import SemanticAnalysis.*;
 
 parser code{:
 
-    ISemanticAnalyzer sa = new SemanticAnalyzer();
+    ISemanticAnalyzer sa = SemanticAnalyzer.getInstance();
 
     // Syntaxis
     public void report_error(String sectionName){

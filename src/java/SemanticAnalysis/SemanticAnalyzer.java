@@ -11,6 +11,8 @@ import SemanticAnalysis.SemanticStackM.Registers.DO_Registers.DataObject;
 
 public class SemanticAnalyzer implements ISemanticAnalyzer {
 
+
+    private static SemanticAnalyzer instance = null;
     private SemanticStack stack;
     private SymbolTable table;
     private CodeGenerator codeGen;
@@ -18,7 +20,18 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
     private int globalHelperWhileLabelCounter = 0;
     private int globalHelperIfLabelCounter = 0;
 
-    public SemanticAnalyzer() {
+    public static SemanticAnalyzer getInstance(){
+        if(instance == null) {
+            instance = new SemanticAnalyzer();
+        }
+        return instance;
+    }
+
+    public void setFileName(String pFileName){
+        codeGen.setFileName(pFileName);
+    }
+
+    private SemanticAnalyzer() {
         this.stack = new SemanticStack();
         this.table = new SymbolTable();
         this.codeGen = new CodeGenerator();
