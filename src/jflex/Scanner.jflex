@@ -153,11 +153,11 @@ StringBoundary = \"
 
     {WhiteSpace}                   {}
 
-    '[a-zA-Z0-9]'                  { return new Symbol(sym.CHARS, yyline, yycolumn, "'"+yytext()+"'"); }
-    '\\x([0-9A-Fa-f])'             { return new Symbol(sym.CHARS, yyline, yycolumn, "'"+yytext()+"'"); }
-    '\\[0-7]{1,3}'                 { return new Symbol(sym.CHARS, yyline, yycolumn, "'"+yytext()+"'"); }
-    '\\[\'\"\?\\]'                 { return new Symbol(sym.CHARS, yyline, yycolumn, "'"+yytext()+"'"); }
-    '\\[abfnrtv]'                  { return new Symbol(sym.CHARS, yyline, yycolumn, "'"+yytext()+"'"); }
+    '[a-zA-Z0-9]'                  { return new Symbol(sym.CHARS, yyline, yycolumn, yytext()); }
+    '\\x([0-9A-Fa-f])'             { return new Symbol(sym.CHARS, yyline, yycolumn, yytext()); }
+    '\\[0-7]{1,3}'                 { return new Symbol(sym.CHARS, yyline, yycolumn, yytext()); }
+    '\\[\'\"\?\\]'                 { return new Symbol(sym.CHARS, yyline, yycolumn, yytext()); }
+    '\\[abfnrtv]'                  { return new Symbol(sym.CHARS, yyline, yycolumn, yytext()); }
 
     //Error ' sin cerrar
     '[^\n\r']*                      { yybegin(YYINITIAL); this.out.addError(yytext(), yyline+1, yycolumn+1); }
