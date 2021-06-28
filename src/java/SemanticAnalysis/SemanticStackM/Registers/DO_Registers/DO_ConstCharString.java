@@ -9,6 +9,6 @@ public class DO_ConstCharString extends DataObject {
 
     @Override
     public String generateCode() {
-        return null;
+        return "mov bx, "+token;
     }
 }
