@@ -55,7 +55,7 @@ terminal String CONST, BREAK, CASE, CONTINUE, DEFAULT, DO, ELSE, FOR, IF, RETURN
 // Mandatory Types
 terminal String CHAR, INT, LONG, SHORT, VOID;
 // Mandatory Functions
-terminal READ, WRITE;
+terminal String READ, WRITE;
 // Numeric Operators
 terminal String PLUS_PLUS, MINUS_MINUS, PLUS, MINUS, MULT, DIV, MOD;
 terminal String PLUS_ASSIGN, MINUS_ASSIGN, MULT_ASSIGN, DIV_ASSIGN, MOD_ASSIGN;
@@ -255,7 +255,7 @@ functionsStmt ::= READ LPAREN IDENTIFIER RPAREN SEMICOLON
                   | READ error 
                     {: report_error("Read instruction"); :}
                     SEMICOLON                                                
-                  | WRITE LPAREN argList RPAREN SEMICOLON
+                  | WRITE LPAREN argList RPAREN SEMICOLON 
                   | WRITE error 
                     {: report_error("Write instruction"); :}
                     SEMICOLON                                                

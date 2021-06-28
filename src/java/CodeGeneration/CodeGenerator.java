@@ -14,6 +14,8 @@ public class CodeGenerator {
 	private final FileGenerator fileGenerator;
 	private boolean isOnPROC;
 
+	private int jumpLableCount = 0;
+
 	public CodeGenerator() {
 		this.dataSegment = "";
 		this.codeSegment = "";
@@ -118,6 +120,104 @@ public class CodeGenerator {
 							"lea di, "+resultVarName+"\n" +
 							"mov word ptr[di], ax";
 				break;
+
+			case ">":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"jg booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			case "<":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"jl booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			case "<=":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"jle booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			case ">=":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"jg booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			case "==":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"je booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			case "!=":
+				result = 	leftDO.generateCode() + "\n" +
+							"mov ax, bx\n" +
+							rightDO.generateCode() + "\n" +
+							"cmp ax, bx\n" +
+							"jne booleanTrue" + jumpLableCount 		+ "\n"+
+							"booleanFalse" + jumpLableCount + ":" 	+ "\n"+
+							"mov ax, 0" 							+ "\n"+
+							"jump booleanExit" + jumpLableCount 	+ "\n"+
+							"booleanTrue" + jumpLableCount +  ":"	+ "\n"+
+							"mov ax, 1" 							+ "\n"+
+							"booleanExit" + jumpLableCount +  ":"	+ "\n"+
+							"lea di, "+resultVarName				+ "\n"+
+							"mov word ptr[di], ax";
+				jumpLableCount++;
+				break;
+			
 		}
 		return result;
 	}
