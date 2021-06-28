@@ -110,14 +110,14 @@ public class CodeGenerator {
 				result = 	leftDO.generateCode() + "\n" +
 							"mov ax, bx\n" +
 							"inc ax\n" +
-							"lea di, "+resultVarName+"\n" +
+							"lea di, "+leftDO.getToken()+"\n" +
 							"mov word ptr[di], ax";
 				break;
 			case "--":
 				result = 	leftDO.generateCode() + "\n" +
 							"mov ax, bx\n" +
 							"dec ax\n" +
-							"lea di, "+resultVarName+"\n" +
+							"lea di, "+leftDO.getToken()+"\n" +
 							"mov word ptr[di], ax";
 				break;
 
