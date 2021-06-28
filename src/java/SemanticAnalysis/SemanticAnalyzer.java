@@ -120,7 +120,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
 
         params.forEach(param -> codeGen.generateGlobalVarCode(param.getName(), param.getType()));
 
-        codeGen.generateOpenProc(funcSymbol, params);
+        //codeGen.generateOpenProc(funcSymbol, params);
     }
 
     @Override
@@ -219,25 +219,24 @@ public class SemanticAnalyzer implements ISemanticAnalyzer{
     @Override
     public void evalBinary(int pLine, int pCol) {
         printSemanticStack();
-        DataObject do1 = (DataObject) stack.pop();
+        DataObject rightDO = (DataObject) stack.pop();
         OperatorRegister op = (OperatorRegister) stack.pop();
-        DataObject do2 = (DataObject) stack.pop();
+        DataObject leftDO = (DataObject) stack.pop();
 
-        if(!do1.getType().equals(do2.getType())){
-            printError("Types do not match: " + do1.getToken() + " and "+ do2.getToken()+" in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + ".");
+        if(!rightDO.getType().equals(leftDO.getType())){
+            printError("Types do not match: " + rightDO.getToken() + " and "+ leftDO.getToken()+" in line: "+ (pLine + 1) + ", in column: " + (pCol + 1) + ".");
         } else {
+//            if(rightDO instanceof DO_ConstInt && leftDO instanceof DO_ConstInt){
+//
+//            }
             String resultVarName = "tempVar"+globalHelperVarCounter;
-            String codeBlock = codeGen.generateOperation(resultVarName, do1, do2, op);
+            String codeBlock = codeGen.generateOperation(resultVarName, rightDO, leftDO, op);
             codeGen.addToCodeSegment(codeBlock);
             codeGen.generateGlobalVarCode(resultVarName, "");
 
-            this.globalHelperVarCounter++;
+            stack.push(new DO_ExpressionVar(resultVarName, leftDO.getType())); //add resulting do
 
-//            if(do1.getType().equals("int") && do2.getType().equals("int")){
-//                //Constant folding
-//            } else {
-//
-//            }
+            this.globalHelperVarCounter++;
         }
 
 

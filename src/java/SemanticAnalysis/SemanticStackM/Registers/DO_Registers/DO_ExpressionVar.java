@@ -11,12 +11,13 @@ public class DO_ExpressionVar extends DataObject{
     @Override
     public String generateCode() {
         String result = "";
-//        switch (type){
-//            case "int":
-//            default:
-//                result = ""
-//                break;
-//        }
+        switch (type){
+            case "int":
+            default:
+                result =    "lea di, "+this.token+"\n" +
+                            "mov bx, word ptr [di]";
+                break;
+        }
         return result;
     }
 }

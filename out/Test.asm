@@ -3,8 +3,8 @@ datos segment
 c db 4 dup (?) 
 b db 4 dup (?) 
 a db 4 dup (?) 
-p db 4 dup (?) 
 tempVar0 db 4 dup (?) 
+tempVar1 db 4 dup (?) 
 
 
 datos ends
@@ -26,27 +26,23 @@ codigo segment
         mov ss, ax
 
         ; carnita del programa
-        call foo
-        mov ax, word ptr [a]
+
+
+        mov bx, [3]
+        mov ax, bx
+        mov bx, [2]
+        mul bx
+        lea di, tempVar0
+        mov word ptr[di], ax
+        lea di, tempVar0
+        mov bx, word ptr [di]
+        lea di, b
+        mov word ptr [di], bx
+
+
+        mov ax, word ptr [b]
         call printAX
         jmp finale
-
-        foo proc near
-	push ax
-	push bx
-	push cx
-	push dx
-	lea di, a
-mov bx, [2]
-mov word ptr [di], bx
-	pop dx
-	pop cx
-	pop bx
-	pop ax
-	ret
-foo endp
-
-
 
         printAX proc near
             ; imprime a la salida estandar un numero que supone estar en el AX
