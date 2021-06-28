@@ -2,6 +2,8 @@ package SemanticAnalysis.SemanticStackM;
 
 import java.util.Stack;
 import java.util.Iterator;
+import java.util.ListIterator;
+
 import SemanticAnalysis.SemanticStackM.Registers.SemanticRegister;
 
 public class SemanticStack {
@@ -13,18 +15,27 @@ public class SemanticStack {
     }
 
 	public SemanticRegister findRegister(Class<?> type){
-		Iterator<SemanticRegister> iter = stack.iterator();
-		
-		while ( iter.hasNext() ) {
-            SemanticRegister semanticRegister = iter.next();
+
+		ListIterator<SemanticRegister> li = stack.listIterator(stack.size());
+
+		// Iterate in reverse.
+		while( li.hasPrevious() ) {
+            SemanticRegister semanticRegister = li.previous();
 			if ( type.isInstance(semanticRegister) ){
 				return (SemanticRegister) semanticRegister;
 			}
-		}
+		}			
 		return null;
 	}
 
 	public SemanticRegister pop() {
+		return this.stack.pop();
+	}
+
+	public SemanticRegister popUntil(Class<?> type) {
+		while (!type.isInstance(stack.peek())) {
+			stack.pop();	
+		}
 		return this.stack.pop();
 	}
     

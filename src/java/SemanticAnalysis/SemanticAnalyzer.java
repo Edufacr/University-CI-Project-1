@@ -338,7 +338,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
             return;
         }
 
-        do1.generateCode();
+        codeGen.addToCodeSegment(do1.generateCode());
         codeGen.generateEvalBooleanExpression(whileRegister.getExitLabel());
     }
 
@@ -349,7 +349,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         codeGen.generateLabelJump(whileRegister.getStartLabel());
         codeGen.generateLabel(whileRegister.getExitLabel());
 
-        stack.pop();
+        stack.popUntil(WhileRegister.class);
     }
 
     @Override
@@ -370,7 +370,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
             printError(errorMessage);
             return;
         }
-        do1.generateCode();
+        codeGen.addToCodeSegment(do1.generateCode());
         codeGen.generateEvalBooleanExpression(ifRegister.getElseLabel());
 
     }
@@ -388,7 +388,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class);
         codeGen.generateLabel(ifRegister.getExitLabel());
 
-        // TODO: En algunos casos va a dar
-        stack.pop();
+        stack.popUntil(IfRegister.class);
     }
 }

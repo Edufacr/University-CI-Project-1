@@ -2,7 +2,7 @@ package SemanticAnalysis.SemanticStackM.Registers.DO_Registers;
 
 import SemanticAnalysis.SemanticStackM.Registers.SemanticRegister;
 
-public abstract class DataObject extends SemanticRegister implements GenerateCode {
+public abstract class DataObject extends SemanticRegister implements GenerateCode{
 
     String type;
     String token;
@@ -23,10 +23,6 @@ public abstract class DataObject extends SemanticRegister implements GenerateCod
 	public String toString() {
 		return "Data Object [ type: " + this.type + ", token: "+this.token+" ]";
 	}
-
-    public String generateCode() {
-        return null;
-    }
 
 }
 
