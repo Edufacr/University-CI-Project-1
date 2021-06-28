@@ -13,9 +13,9 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
 
     private static SemanticAnalyzer instance = null;
-    private SemanticStack stack;
-    private SymbolTable table;
-    private CodeGenerator codeGen;
+    private final SemanticStack stack;
+    private final SymbolTable table;
+    private final CodeGenerator codeGen;
     private int globalHelperVarCounter = 0;
     private int globalHelperWhileLabelCounter = 0;
     private int globalHelperIfLabelCounter = 0;
@@ -48,7 +48,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
     }
 
     public void printSemanticStack() {
-        System.out.println(stack.toString());
+        System.out.println(stack);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         boolean isError = false;
         String errorMessage = "Undefined error";
-        DataObject resDo = new DO_ExpressionVar("FuncRet", "error");;
+        DataObject resDo = new DO_ExpressionVar("FuncRet", "error");
 
         if (!(table.isDefined(pIdentifier))) {
             errorMessage = "Function:  " + pIdentifier + " in line: " 
@@ -194,7 +194,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
                 isError = true;
             } else {
                 for (int i = 0; i < params.size(); i++) {
-                    if (params.get(i).getType() != inParams.get(i).getType()) {
+                    if (!params.get(i).getType().equals(inParams.get(i).getType())) {
                         errorMessage = "Mismatch parameter type in function: " 
                                 + pIdentifier + " in line: "
                                 + (pLine + 1) + ", in column: " + (pCol + 1) 
@@ -226,7 +226,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
     @Override
     public void addConstCharString(String charStringConst) {
-        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "string");
+        DO_ConstCharString charStringDO = new DO_ConstCharString(charStringConst, "char");
         stack.push(charStringDO);
     }
 
@@ -262,7 +262,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
 
         if (!(rightDO.isError() || leftDO.isError())) {
 
-            if ((rightDO.getType() != leftDO.getType())) {
+            if ((!rightDO.getType().equals(leftDO.getType()))) {
                 printError("Types do not match: " + rightDO.getToken() + " and " + leftDO.getToken() + " in line: "
                         + (pLine + 1) + ", in column: " + (pCol + 1) + ".");
             } else {
@@ -274,7 +274,6 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
                 stack.push(new DO_ExpressionVar(resultVarName, leftDO.getType())); // add resulting do
                 this.globalHelperVarCounter++;
                 return;
-
             }
         }
         stack.push(new DO_ExpressionVar("ResError", "error"));
@@ -331,7 +330,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         DataObject do1 = (DataObject) stack.pop();
         WhileRegister whileRegister = (WhileRegister) stack.findRegister(WhileRegister.class);
 
-        if (!(do1.getType() == "int")) {
+        if (!(do1.getType().equals("int"))) {
             String errorMessage = "Expression in while statement at line: " + whileRegister.getLine() + " column: "
                     + whileRegister.getColumn() + "is not of type int";
             printError(errorMessage);
@@ -364,7 +363,7 @@ public class SemanticAnalyzer implements ISemanticAnalyzer {
         DataObject do1 = (DataObject) stack.pop();
         IfRegister ifRegister = (IfRegister) stack.findRegister(IfRegister.class);
 
-        if (!(do1.getType() == "int")) {
+        if (!(do1.getType().equals("int"))) {
             String errorMessage = "Expression in if statement at line: " + ifRegister.getLine() + " column: "
                     + ifRegister.getColumn() + "is not of type int";
             printError(errorMessage);

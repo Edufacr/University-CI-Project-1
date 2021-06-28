@@ -372,8 +372,8 @@ argList ::=     argList COMMA expr
 
 // Literals
 literals ::=      NUMCONST:num    {: sa.addConstInt(num); :}
-                | CHARS:chars     {: RESULT = chars; :}
-                | STRINGS:strings {: RESULT = strings; :}
+                | CHARS:chars     {: sa.addConstCharString(chars); :}
+                | STRINGS:strings {: sa.addConstCharString(strings); :}
                 ;
 
 // Types

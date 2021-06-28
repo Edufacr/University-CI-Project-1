@@ -1,6 +1,5 @@
-int a,b,c;
+char b;
 
 void foo() {
-    b=2;
-    b++;
+    b = 'a';
  }
